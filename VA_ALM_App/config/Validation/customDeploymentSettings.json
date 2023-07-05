@@ -108,9 +108,9 @@
                                     ],
     "AadGroupTeamConfiguration":  [
                                       {
-                                          "aadGroupTeamName":  "validation",
-                                          "aadGroupTeamBusinessUnitId":  "#{businessUnit.d50036ff-83ac-4629-9a63-fa43de36210b.validation}#",
-                                          "aadSecurityGroupId":  "#{groupTeam.d50036ff-83ac-4629-9a63-fa43de36210b.validation}#",
+                                          "aadGroupTeamName":  "Validation",
+                                          "aadGroupTeamBusinessUnitId":  "#{businessUnit.df69807f-6595-4ffb-94a1-f1570c06a3e3.Validation}#",
+                                          "aadSecurityGroupId":  "#{groupTeam.df69807f-6595-4ffb-94a1-f1570c06a3e3.Validation}#",
                                           "dataverseSecurityRoleNames":  [
                                                                              "ALM Power App Access",
                                                                              "Basic User"
