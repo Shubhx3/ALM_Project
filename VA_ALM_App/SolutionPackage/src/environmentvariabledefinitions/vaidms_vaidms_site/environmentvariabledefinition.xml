@@ -1,0 +1,16 @@
+<environmentvariabledefinition schemaname="vaidms_vaidms_site">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <defaultvalue>https://ncidp.sharepoint.com/sites/Prosthetics</defaultvalue>
+  <description default="VAIDMS SharePoint Site">
+    <label description="VAIDMS SharePoint Site" languagecode="1033" />
+  </description>
+  <displayname default="Site Variable">
+    <label description="Site Variable" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>dataset</parameterkey>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>

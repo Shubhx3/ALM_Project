@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>aimodel_vaclaimsreview_2d6e8</Name>
+  <AppVersion>2023-06-21T11:03:20Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>3.23051.33.0</CreatedByClientVersion>
+  <MinClientVersion>3.23051.33.0</MinClientVersion>
+  <Tags>{"primaryDeviceWidth":"1536","primaryDeviceHeight":"660","sienaVersion":"20230529T150349Z-3.23051.23.0","deviceCapabilities":"","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Tablet","publisherVersion":"3.23051.33","minimumRequiredApiVersion":"2.2.0","hasComponent":"true","hasUnlockedComponent":"true","isUnifiedRootApp":"false"}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>rgba(255, 255, 255, 1)</BackgroundColor>
+  <DisplayName>VA Claims Review</DisplayName>
+  <Description>VA Manual Verification PowerApps</Description>
+  <CommitMessage></CommitMessage>
+  <Publisher></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{"3fcf45c5-1cbf-4422-a477-61cc3e5b19f2":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1636/1.0.1636.3297/logicflows/icon.png","dataSources":["GetDataURI"],"dependencies":["67f4d2bf-e11f-4913-8935-e8bcc3bb93f0"],"dependents":[],"parameterHints":{"workflowName":{"value":"a6bc5f10-c7ee-4b21-ac18-418aede47d48"},"workflowEntityId":{"value":"31b1a791-f1cd-ed11-b597-000d3a8d918f"},"67f4d2bf-e11f-4913-8935-e8bcc3bb93f0":{"value":"shared_sharepointonline"}},"parameterHintsV2":{"workflowName":{"value":"a6bc5f10-c7ee-4b21-ac18-418aede47d48"},"workflowEntityId":{"value":"31b1a791-f1cd-ed11-b597-000d3a8d918f"},"shared_sharepointonline":{"value":"67f4d2bf-e11f-4913-8935-e8bcc3bb93f0"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]},"67f4d2bf-e11f-4913-8935-e8bcc3bb93f0":{"id":"/providers/microsoft.powerapps/apis/shared_sharepointonline","displayName":"SharePoint","iconUri":"https://connectoricons-prod.azureedge.net/u/shgogna/globalperconnector-train1/1.0.1639.3310/sharepointonline/icon.png","dataSources":["Library Variable"],"dependencies":[],"dependents":["3fcf45c5-1cbf-4422-a477-61cc3e5b19f2"],"parameterHints":{},"parameterHintsV2":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{"https://idpnc.sharepoint.com/sites/Prosthetics_vaidms_vaidms_site":{"datasetOverride":{"name":"https://idpnc.sharepoint.com/sites/Prosthetics","environmentVariableName":"vaidms_vaidms_site"},"dataSources":{"Library Variable":{"tableName":"d64a946c-099b-4cd6-a28a-7dba6e243bf2","tableNameOverride":{"name":"d64a946c-099b-4cd6-a28a-7dba6e243bf2","environmentVariableName":"vaidms_ClothingAllowanceLibrary"}}}}},"apiTier":"Standard","actions":["providers/PowerPlatform.Governance/Operations/Read","providers/PowerPlatform.Governance/Operations/Write"]}}</ConnectionReferences>
+  <DatabaseReferences>{}</DatabaseReferences>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>0</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[{"componenttype":380,"logicalname":"vaidms_vaidms_site","componenttypeplatformname":"EnvironmentVariableDefinition"},{"componenttype":380,"logicalname":"vaidms_ClothingAllowanceLibrary","componenttypeplatformname":"EnvironmentVariableDefinition"}]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <BackgroundImageUri>/CanvasApps/aimodel_vaclaimsreview_2d6e8_BackgroundImageUri</BackgroundImageUri>
+  <DocumentUri>/CanvasApps/aimodel_vaclaimsreview_2d6e8_DocumentUri.msapp</DocumentUri>
+</CanvasApp>

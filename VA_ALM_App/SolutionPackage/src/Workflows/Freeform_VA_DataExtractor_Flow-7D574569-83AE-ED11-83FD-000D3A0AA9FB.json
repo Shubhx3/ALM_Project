@@ -1,0 +1,833 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline_2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_98203"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_sharepointonline_3": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_692a8"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_commondataserviceforapps_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_36124"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Site Variable (vaidms_vaidms_site)": {
+          "defaultValue": "https://idpnc.sharepoint.com/sites/Prosthetics",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_vaidms_site",
+            "description": "VAIDMS SharePoint Site"
+          }
+        },
+        "Library Variable (vaidms_ClothingAllowanceLibrary)": {
+          "defaultValue": "d64a946c-099b-4cd6-a28a-7dba6e243bf2",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_ClothingAllowanceLibrary",
+            "description": "Clothing Allowance Library"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_file_is_classified_by_a_Microsoft_Syntex_model": {
+          "recurrence": {
+            "interval": 1,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "c130ea97-500f-4ca9-a549-1760a66bb4b2"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline_3",
+              "operationId": "GetOnUpdatedFileClassifiedTimes",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Get_file_content": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "acca31d6-668e-497e-a8c1-135c7412994c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline_2",
+              "operationId": "GetFileContent",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "id": "@triggerOutputs()?['body/{Identifier}']",
+              "inferContentType": true
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_to_check_Document_Type": {
+          "actions": {
+            "Create_file": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "bab33213-bd99-48a6-b0b2-118f0d8c90bd"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline_3",
+                  "operationId": "CreateFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                  "folderPath": "/Unknown Documents",
+                  "name": "@triggerOutputs()?['body/{FilenameWithExtension}']",
+                  "body": "@body('Get_file_content')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Delete_file": {
+              "runAfter": {
+                "Create_file": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b9ffbc42-1b98-44fe-95b7-d5f6362a43a6"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline_3",
+                  "operationId": "DeleteFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                  "id": "@triggerOutputs()?['body/{Identifier}']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_file_content": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Predict": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "1645d442-bd8a-4fd1-9c45-44f4463c6fda",
+                  "flowSystemMetadata": {
+                    "portalOperationId": "aibuilderpredict",
+                    "portalOperationGroup": "aibuilder",
+                    "portalOperationApiDisplayNameOverride": "AI Builder",
+                    "portalOperationIconOverride": "https://content.powerapps.com/resource/makerx/static/pauto/images/designeroperations/aiBuilderNew.51dbdb6b.png",
+                    "portalOperationBrandColorOverride": "#0A76C4",
+                    "portalOperationApiTierOverride": "Standard"
+                  }
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps_1",
+                    "operationId": "aibuilderpredict",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "recordId": "55e0d8ac-da51-41d5-9bc4-d606c17a62bb",
+                    "item/requestv2/mimeType": "application/pdf",
+                    "item/requestv2/base64Encoded": "@body('Get_file_content')"
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "Condition": {
+                "actions": {
+                  "Compose_2": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "70161770-1baa-45a7-9055-ba4f46ca6ee6"
+                    },
+                    "type": "Compose",
+                    "inputs": "@concat('20',outputs('Predict')?['body/responsev2/predictionOutput/labels/Calendar42ceda72893dd8527b9e0ad0f3e93600/value'])"
+                  },
+                  "Update_file_properties": {
+                    "runAfter": {
+                      "Compose_2": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "b9e05e5c-3fd4-434c-94d2-69f5993b5ad3"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_sharepointonline_3",
+                        "operationId": "PatchFileItem",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                      },
+                      "parameters": {
+                        "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                        "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                        "id": "@triggerOutputs()?['body/ID']",
+                        "item/FinalApprovalStatus/Value": "Pending",
+                        "item/ManuallyVerified/Value": "Not Verified",
+                        "item/PartiallyDenied/Value": "No",
+                        "item/LastName": "@concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'],0,1)),toLower(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'],1)))",
+                        "item/ConfidenceLastName": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/confidence']",
+                        "item/FirstName": "@concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/First_0096ce6e6193a047260f5c32aa416d88b6/value'],0,1)),toLower(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/First_0096ce6e6193a047260f5c32aa416d88b6/value'],1)))",
+                        "item/ConfidenceFirstName": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/First_0096ce6e6193a047260f5c32aa416d88b6/confidence']",
+                        "item/MiddleName": "@if(empty(outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/value']),'',concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/value'],0,1)),toLower(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/value'],1))))",
+                        "item/ConfidenceMiddleName": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/confidence']",
+                        "item/VeteranSSN": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/value']",
+                        "item/ConfidenceVeteranSSN": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/confidence']",
+                        "item/MailingAddressofVeteran": "@outputs('join_array_for_address')",
+                        "item/ConfidenceMailingAddressofVeteran": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Mailing_7b5a7bdfad6b4cdf92b8a5b42b73034b/confidence']",
+                        "item/VeteranTelephoneNumber": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Telephon9417af9d6487c7e11a61edf9cb0be318/value']",
+                        "item/ConfidenceVeteranTelephoneNumber": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Telephon9417af9d6487c7e11a61edf9cb0be318/confidence']",
+                        "item/VeteranEmailAddress": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Email_0009bf25ef308336338ea33f83d6e4f4a0/value']",
+                        "item/ConfidenceVeteranEmailAddress": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Email_0009bf25ef308336338ea33f83d6e4f4a0/confidence']",
+                        "item/CalendarYearForApplication": "@outputs('Compose_2')",
+                        "item/ConfidenceCalendarYearForApplication": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Calendar42ceda72893dd8527b9e0ad0f3e93600/confidence']",
+                        "item/ClaimDate": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Claim_00498e5b1e5eb17fa7b600a8d3eb0ce96a/value']",
+                        "item/ConfidenceClaimDate": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Claim_00498e5b1e5eb17fa7b600a8d3eb0ce96a/confidence']",
+                        "item/TypeofAppliance1": "@outputs('join_array_for_appliance_1')",
+                        "item/ConfidenceTypeofAppliance1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance1/confidence']",
+                        "item/ServiceConnectedDisability1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_8759a3e66a040ff79c081cbe24de3f94/value']",
+                        "item/ConfidenceServiceConnectedDisability1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_8759a3e66a040ff79c081cbe24de3f94/confidence']",
+                        "item/IssueDate1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00cf1e4c3c91217a9054c552dcd7bdfbc4/value']",
+                        "item/ConfidenceIssueDate1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00cf1e4c3c91217a9054c552dcd7bdfbc4/confidence']",
+                        "item/VAFacility1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F213066bb901f50c3a4113a0f1adf3627/value']",
+                        "item/ConfidenceVAFacility1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F213066bb901f50c3a4113a0f1adf3627/confidence']",
+                        "item/ImpactedLocation1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5a14fcef0fa676a2c02a81e2cfa07c8a/value']",
+                        "item/ConfidenceImpactedLocation1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5a14fcef0fa676a2c02a81e2cfa07c8a/confidence']",
+                        "item/TypeofAppliance2": "@outputs('join_array_for_appliance_2')",
+                        "item/ConfidenceTypeofAppliance2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance2/confidence']",
+                        "item/ServiceConnectedDisability2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_5fad4be0a01785ec80e2ab8cd11d8254/value']",
+                        "item/ConfidenceServiceConnectedDisability2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_5fad4be0a01785ec80e2ab8cd11d8254/confidence']",
+                        "item/IssueDate2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_0063e9a140ccdbf1ddc4ae3cd1d04b940c/value']",
+                        "item/ConfidenceIssueDate2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_0063e9a140ccdbf1ddc4ae3cd1d04b940c/confidence']",
+                        "item/VAFacility2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Faec1bef270b3bad9cbee469777689a7a/value']",
+                        "item/ConfidenceVAFacility2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Faec1bef270b3bad9cbee469777689a7a/confidence']",
+                        "item/ImpactedLocation2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected4c629274c8de67d69cdf8a3d203e211f/value']",
+                        "item/ConfidenceImpactedLocation2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected4c629274c8de67d69cdf8a3d203e211f/confidence']",
+                        "item/TypeofAppliance3": "@outputs('join_array_for_appliance_3')",
+                        "item/ConfidenceTypeofAppliance3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance3/confidence']",
+                        "item/ServiceConnectedDisability3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_1d402fa2887cb3fb815f07ec6cfccb7c/value']",
+                        "item/ConfidenceServiceConnectedDisability3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_1d402fa2887cb3fb815f07ec6cfccb7c/confidence']",
+                        "item/IssueDate3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00a616d2abd9f7972381c6885cae3a6d5d/value']",
+                        "item/ConfidenceIssueDate3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00a616d2abd9f7972381c6885cae3a6d5d/confidence']",
+                        "item/VAFacility3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F020f11805a99a7efb9783a7aca51299a/value']",
+                        "item/ConfidenceVAFacility3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F020f11805a99a7efb9783a7aca51299a/confidence']",
+                        "item/ImpactedLocation3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5f84f7e4c3ecd1284e044dab2fc6ac9b/value']",
+                        "item/ConfidenceImpactedLocation3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5f84f7e4c3ecd1284e044dab2fc6ac9b/confidence']",
+                        "item/TypeofAppliance4": "@outputs('join_array_for_appliance_4')",
+                        "item/ConfidenceTypeofAppliance4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance4/confidence']",
+                        "item/ServiceConnectedDisability4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_91bf1240e5a22376bf05c97066add243/value']",
+                        "item/ConfidenceServiceConnectedDisability4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_91bf1240e5a22376bf05c97066add243/confidence']",
+                        "item/IssueDate4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00e42a15ada15fbdbd647289e3a3d2344d/value']",
+                        "item/ConfidenceIssueDate4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00e42a15ada15fbdbd647289e3a3d2344d/confidence']",
+                        "item/VAFacility4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Ff3ce197e4a27a417797537d5b30d5905/value']",
+                        "item/ConfidenceVAFacility4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Ff3ce197e4a27a417797537d5b30d5905/confidence']",
+                        "item/ImpactedLocation4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected34e133a003fac6f56734c22d7ef35776/value']",
+                        "item/ConfidenceImpactedLocation4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected34e133a003fac6f56734c22d7ef35776/confidence']",
+                        "item/TypeofAppliance5": "@outputs('join_array_for_appliance_5')",
+                        "item/ConfidenceTypeofAppliance5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance5/confidence']",
+                        "item/ServiceConnectedDisability5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_3cb9dba19ff2454e20d753c8221b7fc4/value']",
+                        "item/ConfidenceServiceConnectedDisability5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_3cb9dba19ff2454e20d753c8221b7fc4/confidence']",
+                        "item/IssueDate5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_007e4db4f956a496ecac2e964c8bd06fc0/value']",
+                        "item/ConfidenceIssueDate5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_007e4db4f956a496ecac2e964c8bd06fc0/confidence']",
+                        "item/VAFacility5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F867013a50050d06053156fc4117d745a/value']",
+                        "item/ConfidenceVAFacility5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F867013a50050d06053156fc4117d745a/confidence']",
+                        "item/ImpactedLocation5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impectede563e865e47d20bd50cde0516a0376bc/value']",
+                        "item/ConfidenceImpactedLocation5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impectede563e865e47d20bd50cde0516a0376bc/confidence']"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  },
+                  "Rename_SharePoint_File_after_extraction": {
+                    "runAfter": {
+                      "Update_file_properties": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "2e0289d0-5d4b-4c59-b0a1-c2a8f8b124a6"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_sharepointonline_3",
+                        "operationId": "HttpRequest",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                      },
+                      "parameters": {
+                        "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                        "parameters/method": "POST",
+                        "parameters/uri": "_api/lists/getbytitle('Clothing Allowance')/items(@{outputs('Update_file_properties')?['body/ID']})",
+                        "parameters/headers": {
+                          "content-type": "application/json;odata=verbose",
+                          "IF-MATCH": "*",
+                          "X-HTTP-METHOD": "PATCH"
+                        },
+                        "parameters/body": "{'__metadata':\n{'type':'SP.Data.Clothing_x0020_AllowanceItem'},\n'FileLeafRef':'@{concat(concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'], 0, 1)), slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'], 1)),'_',substring(outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/value'],sub(length(outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/value']),4),4),'_',formatDateTime(outputs('Predict')?['body/responsev2/predictionOutput/labels/Claim_00498e5b1e5eb17fa7b600a8d3eb0ce96a/value'],'yyyy-MM-dd'),'.pdf')}'}"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                },
+                "runAfter": {
+                  "join_array_for_address": [
+                    "Succeeded"
+                  ]
+                },
+                "else": {
+                  "actions": {
+                    "Update_file_properties_2": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "b9e05e5c-3fd4-434c-94d2-69f5993b5ad3"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_sharepointonline_3",
+                          "operationId": "PatchFileItem",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                          "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                          "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                          "id": "@triggerOutputs()?['body/ID']",
+                          "item/FinalApprovalStatus/Value": "Pending",
+                          "item/ManuallyVerified/Value": "Not Verified",
+                          "item/PartiallyDenied/Value": "No",
+                          "item/LastName": "@concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'],0,1)),toLower(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'],1)))",
+                          "item/ConfidenceLastName": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/confidence']",
+                          "item/FirstName": "@concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/First_0096ce6e6193a047260f5c32aa416d88b6/value'],0,1)),toLower(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/First_0096ce6e6193a047260f5c32aa416d88b6/value'],1)))",
+                          "item/ConfidenceFirstName": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/First_0096ce6e6193a047260f5c32aa416d88b6/confidence']",
+                          "item/MiddleName": "@if(empty(outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/value']),'',concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/value'],0,1)),toLower(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/value'],1))))",
+                          "item/ConfidenceMiddleName": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Middle_0ba644ed13c0c2717e51fa147194616f7/confidence']",
+                          "item/VeteranSSN": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/value']",
+                          "item/ConfidenceVeteranSSN": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/confidence']",
+                          "item/MailingAddressofVeteran": "@outputs('join_array_for_address')",
+                          "item/ConfidenceMailingAddressofVeteran": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Mailing_7b5a7bdfad6b4cdf92b8a5b42b73034b/confidence']",
+                          "item/VeteranTelephoneNumber": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Telephon9417af9d6487c7e11a61edf9cb0be318/value']",
+                          "item/ConfidenceVeteranTelephoneNumber": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Telephon9417af9d6487c7e11a61edf9cb0be318/confidence']",
+                          "item/VeteranEmailAddress": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Email_0009bf25ef308336338ea33f83d6e4f4a0/value']",
+                          "item/ConfidenceVeteranEmailAddress": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Email_0009bf25ef308336338ea33f83d6e4f4a0/confidence']",
+                          "item/CalendarYearForApplication": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Calendar42ceda72893dd8527b9e0ad0f3e93600/value']",
+                          "item/ConfidenceCalendarYearForApplication": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Calendar42ceda72893dd8527b9e0ad0f3e93600/confidence']",
+                          "item/ClaimDate": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Claim_00498e5b1e5eb17fa7b600a8d3eb0ce96a/value']",
+                          "item/ConfidenceClaimDate": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Claim_00498e5b1e5eb17fa7b600a8d3eb0ce96a/confidence']",
+                          "item/TypeofAppliance1": "@outputs('join_array_for_appliance_1')",
+                          "item/ConfidenceTypeofAppliance1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance1/confidence']",
+                          "item/ServiceConnectedDisability1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_8759a3e66a040ff79c081cbe24de3f94/value']",
+                          "item/ConfidenceServiceConnectedDisability1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_8759a3e66a040ff79c081cbe24de3f94/confidence']",
+                          "item/IssueDate1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00cf1e4c3c91217a9054c552dcd7bdfbc4/value']",
+                          "item/ConfidenceIssueDate1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00cf1e4c3c91217a9054c552dcd7bdfbc4/confidence']",
+                          "item/VAFacility1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F213066bb901f50c3a4113a0f1adf3627/value']",
+                          "item/ConfidenceVAFacility1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F213066bb901f50c3a4113a0f1adf3627/confidence']",
+                          "item/ImpactedLocation1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5a14fcef0fa676a2c02a81e2cfa07c8a/value']",
+                          "item/ConfidenceImpactedLocation1": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5a14fcef0fa676a2c02a81e2cfa07c8a/confidence']",
+                          "item/TypeofAppliance2": "@outputs('join_array_for_appliance_2')",
+                          "item/ConfidenceTypeofAppliance2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance2/confidence']",
+                          "item/ServiceConnectedDisability2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_5fad4be0a01785ec80e2ab8cd11d8254/value']",
+                          "item/ConfidenceServiceConnectedDisability2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_5fad4be0a01785ec80e2ab8cd11d8254/confidence']",
+                          "item/IssueDate2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_0063e9a140ccdbf1ddc4ae3cd1d04b940c/value']",
+                          "item/ConfidenceIssueDate2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_0063e9a140ccdbf1ddc4ae3cd1d04b940c/confidence']",
+                          "item/VAFacility2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Faec1bef270b3bad9cbee469777689a7a/value']",
+                          "item/ConfidenceVAFacility2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Faec1bef270b3bad9cbee469777689a7a/confidence']",
+                          "item/ImpactedLocation2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected4c629274c8de67d69cdf8a3d203e211f/value']",
+                          "item/ConfidenceImpactedLocation2": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected4c629274c8de67d69cdf8a3d203e211f/confidence']",
+                          "item/TypeofAppliance3": "@outputs('join_array_for_appliance_3')",
+                          "item/ConfidenceTypeofAppliance3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance3/confidence']",
+                          "item/ServiceConnectedDisability3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_1d402fa2887cb3fb815f07ec6cfccb7c/value']",
+                          "item/ConfidenceServiceConnectedDisability3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_1d402fa2887cb3fb815f07ec6cfccb7c/confidence']",
+                          "item/IssueDate3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00a616d2abd9f7972381c6885cae3a6d5d/value']",
+                          "item/ConfidenceIssueDate3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00a616d2abd9f7972381c6885cae3a6d5d/confidence']",
+                          "item/VAFacility3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F020f11805a99a7efb9783a7aca51299a/value']",
+                          "item/ConfidenceVAFacility3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F020f11805a99a7efb9783a7aca51299a/confidence']",
+                          "item/ImpactedLocation3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5f84f7e4c3ecd1284e044dab2fc6ac9b/value']",
+                          "item/ConfidenceImpactedLocation3": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected5f84f7e4c3ecd1284e044dab2fc6ac9b/confidence']",
+                          "item/TypeofAppliance4": "@outputs('join_array_for_appliance_4')",
+                          "item/ConfidenceTypeofAppliance4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance4/confidence']",
+                          "item/ServiceConnectedDisability4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_91bf1240e5a22376bf05c97066add243/value']",
+                          "item/ConfidenceServiceConnectedDisability4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_91bf1240e5a22376bf05c97066add243/confidence']",
+                          "item/IssueDate4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00e42a15ada15fbdbd647289e3a3d2344d/value']",
+                          "item/ConfidenceIssueDate4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_00e42a15ada15fbdbd647289e3a3d2344d/confidence']",
+                          "item/VAFacility4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Ff3ce197e4a27a417797537d5b30d5905/value']",
+                          "item/ConfidenceVAFacility4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020Ff3ce197e4a27a417797537d5b30d5905/confidence']",
+                          "item/ImpactedLocation4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected34e133a003fac6f56734c22d7ef35776/value']",
+                          "item/ConfidenceImpactedLocation4": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impected34e133a003fac6f56734c22d7ef35776/confidence']",
+                          "item/TypeofAppliance5": "@outputs('join_array_for_appliance_5')",
+                          "item/ConfidenceTypeofAppliance5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance5/confidence']",
+                          "item/ServiceConnectedDisability5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_3cb9dba19ff2454e20d753c8221b7fc4/value']",
+                          "item/ConfidenceServiceConnectedDisability5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Service_3cb9dba19ff2454e20d753c8221b7fc4/confidence']",
+                          "item/IssueDate5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_007e4db4f956a496ecac2e964c8bd06fc0/value']",
+                          "item/ConfidenceIssueDate5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Issue_007e4db4f956a496ecac2e964c8bd06fc0/confidence']",
+                          "item/VAFacility5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F867013a50050d06053156fc4117d745a/value']",
+                          "item/ConfidenceVAFacility5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/VA_0020F867013a50050d06053156fc4117d745a/confidence']",
+                          "item/ImpactedLocation5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impectede563e865e47d20bd50cde0516a0376bc/value']",
+                          "item/ConfidenceImpactedLocation5": "@outputs('Predict')?['body/responsev2/predictionOutput/labels/Impectede563e865e47d20bd50cde0516a0376bc/confidence']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "Rename_SharePoint_File_after_extraction_2": {
+                      "runAfter": {
+                        "Update_file_properties_2": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "2e0289d0-5d4b-4c59-b0a1-c2a8f8b124a6"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_sharepointonline_3",
+                          "operationId": "HttpRequest",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                          "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                          "parameters/method": "POST",
+                          "parameters/uri": "_api/lists/getbytitle('Clothing Allowance')/items(@{outputs('Update_file_properties_2')?['body/ID']})",
+                          "parameters/headers": {
+                            "content-type": "application/json;odata=verbose",
+                            "IF-MATCH": "*",
+                            "X-HTTP-METHOD": "PATCH"
+                          },
+                          "parameters/body": "{'__metadata':\n{'type':'SP.Data.Clothing_x0020_AllowanceItem'},\n'FileLeafRef':'@{concat(concat(toUpper(slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'], 0, 1)), slice(outputs('Predict')?['body/responsev2/predictionOutput/labels/Last_002f55563b386a39dc3093ff86421fb665d/value'], 1)), '_', substring(outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/value'], sub(length(outputs('Predict')?['body/responsev2/predictionOutput/labels/Veteran_191d7cfacd08eb78a54c5a130b24f81f/value']), 4), 4), '_', formatDateTime(outputs('Predict')?['body/responsev2/predictionOutput/labels/Claim_00498e5b1e5eb17fa7b600a8d3eb0ce96a/value'], 'yyyy-MM-dd'), '.pdf')}'}"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    }
+                  }
+                },
+                "expression": {
+                  "equals": [
+                    "@length(outputs('Predict')?['body/responsev2/predictionOutput/labels/Calendar42ceda72893dd8527b9e0ad0f3e93600/value'])",
+                    2
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "30e67820-f460-459e-82c1-9233e3aa07eb"
+                },
+                "type": "If"
+              },
+              "Split_appliance_1_into_array_": {
+                "runAfter": {
+                  "Predict": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "5fc6e0e3-4e8f-4832-8fca-3086df9dafa5"
+                },
+                "type": "Compose",
+                "inputs": "@split(tolower(outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance1/value']), ' ')"
+              },
+              "Apply_to_each_2": {
+                "foreach": "@outputs('Split_appliance_1_into_array_')",
+                "actions": {
+                  "Upper_case_first_letter": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "d36f7c5a-0ebe-4889-b78c-7dc0b09a9521"
+                    },
+                    "type": "Compose",
+                    "inputs": "@concat(first(toupper(item())), substring(item(), 1, sub(length(item()), 1)))"
+                  },
+                  "Compose": {
+                    "runAfter": {
+                      "Upper_case_first_letter": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "0ea44638-e414-40fb-acc9-d9c1c1006747"
+                    },
+                    "type": "Compose",
+                    "inputs": "@outputs('Upper_case_first_letter')"
+                  }
+                },
+                "runAfter": {
+                  "Split_appliance_1_into_array_": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "f029ea8a-b2f8-4bc0-aa46-bfdac69ec939"
+                },
+                "type": "Foreach"
+              },
+              "join_array_for_appliance_1": {
+                "runAfter": {
+                  "Apply_to_each_2": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "6da86a4d-294d-47ae-9a4a-fa75d1166226"
+                },
+                "type": "Compose",
+                "inputs": "@join(outputs('Upper_case_first_letter'),' ')"
+              },
+              "Split_appliance_2_into_array": {
+                "runAfter": {
+                  "join_array_for_appliance_1": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "fc6fa0ca-3631-461e-9434-c81ac3c99feb"
+                },
+                "type": "Compose",
+                "inputs": "@split(tolower(outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance2/value']), ' ')"
+              },
+              "Apply_to_each": {
+                "foreach": "@outputs('Split_appliance_2_into_array')",
+                "actions": {
+                  "Appliance_2_upper_case": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "5b17b182-3fab-4fef-97c0-92ffa4521af5"
+                    },
+                    "type": "Compose",
+                    "inputs": "@concat(first(toupper(item())), substring(item(), 1, sub(length(item()), 1)))"
+                  },
+                  "Compose_3": {
+                    "runAfter": {
+                      "Appliance_2_upper_case": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "0299ebd8-b80e-44a7-8c74-4475a1b9117e"
+                    },
+                    "type": "Compose",
+                    "inputs": "@outputs('Appliance_2_upper_case')"
+                  }
+                },
+                "runAfter": {
+                  "Split_appliance_2_into_array": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "1d68f7c3-e151-4c96-bb53-f0a3cd4f3b94"
+                },
+                "type": "Foreach"
+              },
+              "join_array_for_appliance_2": {
+                "runAfter": {
+                  "Apply_to_each": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "2942659b-5bba-4c5e-8082-18b58d1d031b"
+                },
+                "type": "Compose",
+                "inputs": "@join(outputs('Appliance_2_upper_case'),' ')"
+              },
+              "Split_appliance_3_into_array": {
+                "runAfter": {
+                  "join_array_for_appliance_2": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "c32c30ff-ff8c-496a-a4c1-98e1330ef7f0"
+                },
+                "type": "Compose",
+                "inputs": "@split(tolower(outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance3/value']), ' ')"
+              },
+              "Apply_to_each_3": {
+                "foreach": "@outputs('Split_appliance_3_into_array')",
+                "actions": {
+                  "Appliance_3_upper_case": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "a380af54-c3a3-4642-b87f-c036ca372be5"
+                    },
+                    "type": "Compose",
+                    "inputs": "@concat(first(toupper(item())), substring(item(), 1, sub(length(item()), 1)))"
+                  },
+                  "Compose_4": {
+                    "runAfter": {
+                      "Appliance_3_upper_case": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "8f0b26d3-f58f-4321-8b85-67cc2278c6e4"
+                    },
+                    "type": "Compose",
+                    "inputs": "@outputs('Appliance_3_upper_case')"
+                  }
+                },
+                "runAfter": {
+                  "Split_appliance_3_into_array": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "ea01c498-4a8a-464b-9269-5fe549ad54ae"
+                },
+                "type": "Foreach"
+              },
+              "join_array_for_appliance_3": {
+                "runAfter": {
+                  "Apply_to_each_3": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "83bc39b0-3491-4d61-ad07-ec4c30537141"
+                },
+                "type": "Compose",
+                "inputs": "@join(outputs('Appliance_3_upper_case'),' ')"
+              },
+              "Split_appliance_4_into_array": {
+                "runAfter": {
+                  "join_array_for_appliance_3": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "064f557b-a7ef-47c3-b008-5fcd2a297698"
+                },
+                "type": "Compose",
+                "inputs": "@split(tolower(outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance4/value']), ' ')\r\n"
+              },
+              "Apply_to_each_4": {
+                "foreach": "@outputs('Split_appliance_4_into_array')",
+                "actions": {
+                  "Appliance_4_upper_case": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "ebe1d693-752a-4dc8-8b20-24ba863bff19"
+                    },
+                    "type": "Compose",
+                    "inputs": "@concat(first(toupper(item())), substring(item(), 1, sub(length(item()), 1)))\r\n"
+                  },
+                  "Compose_5": {
+                    "runAfter": {
+                      "Appliance_4_upper_case": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "848748fe-9051-48a7-8344-5cc1b62731f8"
+                    },
+                    "type": "Compose",
+                    "inputs": "@outputs('Appliance_4_upper_case')"
+                  }
+                },
+                "runAfter": {
+                  "Split_appliance_4_into_array": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "6124b6bb-6a50-4071-a668-d7842689f882"
+                },
+                "type": "Foreach"
+              },
+              "join_array_for_appliance_4": {
+                "runAfter": {
+                  "Apply_to_each_4": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "27599ab3-a383-49ab-87c3-4b2b5feb876d"
+                },
+                "type": "Compose",
+                "inputs": "@join(outputs('Appliance_4_upper_case'),' ')"
+              },
+              "Split_appliance_5_into_array": {
+                "runAfter": {
+                  "join_array_for_appliance_4": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "7706ada0-c024-46c5-8d90-ddbc6123d39a"
+                },
+                "type": "Compose",
+                "inputs": "@split(tolower(outputs('Predict')?['body/responsev2/predictionOutput/labels/Appliance5/value']), ' ')"
+              },
+              "Apply_to_each_5": {
+                "foreach": "@outputs('Split_appliance_5_into_array')",
+                "actions": {
+                  "Appliance_5_upper_case": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "e48b6546-9d06-4ef8-a5f0-34f731d62f85"
+                    },
+                    "type": "Compose",
+                    "inputs": "@concat(first(toupper(item())), substring(item(), 1, sub(length(item()), 1)))\r\n"
+                  },
+                  "Compose_6": {
+                    "runAfter": {
+                      "Appliance_5_upper_case": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "4c4f2b1f-5398-4905-bf64-f1e12510e5c4"
+                    },
+                    "type": "Compose",
+                    "inputs": "@outputs('Appliance_5_upper_case')"
+                  }
+                },
+                "runAfter": {
+                  "Split_appliance_5_into_array": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "3549d4c4-606d-4be5-883c-7b45ffb25ad0"
+                },
+                "type": "Foreach"
+              },
+              "join_array_for_appliance_5": {
+                "runAfter": {
+                  "Apply_to_each_5": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "5e9d0ad1-aae0-455e-b8d5-337f516ecd63"
+                },
+                "type": "Compose",
+                "inputs": "@join(outputs('Appliance_5_upper_case'),' ')"
+              },
+              "Split_address_into_array": {
+                "runAfter": {
+                  "join_array_for_appliance_5": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "34236718-eb81-42d1-97f7-db9193b4052a"
+                },
+                "type": "Compose",
+                "inputs": "@split(tolower(outputs('Predict')?['body/responsev2/predictionOutput/labels/Mailing_7b5a7bdfad6b4cdf92b8a5b42b73034b/value']), ' ')"
+              },
+              "Apply_to_each_6": {
+                "foreach": "@outputs('Split_address_into_array')",
+                "actions": {
+                  "Address_upper_case": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "e6224244-807d-46f7-929c-488a113d5858"
+                    },
+                    "type": "Compose",
+                    "inputs": "@concat(first(toupper(item())), substring(item(), 1, sub(length(item()), 1)))\r\n"
+                  },
+                  "Compose_7": {
+                    "runAfter": {
+                      "Address_upper_case": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "306d256a-f400-417d-832d-689f6dc734a2"
+                    },
+                    "type": "Compose",
+                    "inputs": "@outputs('Address_upper_case')"
+                  }
+                },
+                "runAfter": {
+                  "Split_address_into_array": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "9c05ef15-49c4-4ca8-9a58-c9ccfb9c5899"
+                },
+                "type": "Foreach"
+              },
+              "join_array_for_address": {
+                "runAfter": {
+                  "Apply_to_each_6": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "95f8104a-a450-429b-baec-bb1a82e72129"
+                },
+                "type": "Compose",
+                "inputs": "@join(outputs('Address_upper_case'),' ')"
+              }
+            }
+          },
+          "expression": {
+            "contains": [
+              "@triggerOutputs()?['body/{ContentType}/Name']",
+              "Document"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8f3a4efd-4eec-43ba-95f2-6dc1f70a6e5f"
+          },
+          "type": "If"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,19 @@
+<environmentvariabledefinition schemaname="vaidms_ClothingAllowanceLibrary">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <defaultvalue>70a0165c-6943-4e71-8595-6398ed5e11f6</defaultvalue>
+  <description default="Clothing Allowance Library">
+    <label description="Clothing Allowance Library" languagecode="1033" />
+  </description>
+  <displayname default="Library Variable">
+    <label description="Library Variable" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>vaidms_vaidms_site</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>

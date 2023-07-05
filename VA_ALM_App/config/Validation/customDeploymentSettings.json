@@ -1,0 +1,123 @@
+{
+    "ActivateFlowConfiguration":  [
+                                      {
+                                          "solutionComponentName":  "ListApprovedDevices",
+                                          "solutionComponentUniqueName":  "536b155a-0df3-ed11-8848-000d3a8d918f",
+                                          "activateAsUser":  "#{activateflow.activateas.ListApprovedDevices.536b155a-0df3-ed11-8848-000d3a8d918f}#",
+                                          "sortOrder":  "#{activateflow.order.ListApprovedDevices.536b155a-0df3-ed11-8848-000d3a8d918f}#",
+                                          "activate":  "#{activateflow.activate.ListApprovedDevices.536b155a-0df3-ed11-8848-000d3a8d918f}#"
+                                      },
+                                      {
+                                          "solutionComponentName":  "Freeform_VA_DataExtractor_Flow",
+                                          "solutionComponentUniqueName":  "7d574569-83ae-ed11-83fd-000d3a0aa9fb",
+                                          "activateAsUser":  "#{activateflow.activateas.Freeform_VA_DataExtractor_Flow.7d574569-83ae-ed11-83fd-000d3a0aa9fb}#",
+                                          "sortOrder":  "#{activateflow.order.Freeform_VA_DataExtractor_Flow.7d574569-83ae-ed11-83fd-000d3a0aa9fb}#",
+                                          "activate":  "#{activateflow.activate.Freeform_VA_DataExtractor_Flow.7d574569-83ae-ed11-83fd-000d3a0aa9fb}#"
+                                      },
+                                      {
+                                          "solutionComponentName":  "GetDataURI",
+                                          "solutionComponentUniqueName":  "31b1a791-f1cd-ed11-b597-000d3a8d918f",
+                                          "activateAsUser":  "#{activateflow.activateas.GetDataURI.31b1a791-f1cd-ed11-b597-000d3a8d918f}#",
+                                          "sortOrder":  "#{activateflow.order.GetDataURI.31b1a791-f1cd-ed11-b597-000d3a8d918f}#",
+                                          "activate":  "#{activateflow.activate.GetDataURI.31b1a791-f1cd-ed11-b597-000d3a8d918f}#"
+                                      },
+                                      {
+                                          "solutionComponentName":  "VBMS_RecordCreationforAlldevices",
+                                          "solutionComponentUniqueName":  "72e7c9fb-08c7-ed11-b597-000d3a0aa9fb",
+                                          "activateAsUser":  "#{activateflow.activateas.VBMS_RecordCreationforAlldevices.72e7c9fb-08c7-ed11-b597-000d3a0aa9fb}#",
+                                          "sortOrder":  "#{activateflow.order.VBMS_RecordCreationforAlldevices.72e7c9fb-08c7-ed11-b597-000d3a0aa9fb}#",
+                                          "activate":  "#{activateflow.activate.VBMS_RecordCreationforAlldevices.72e7c9fb-08c7-ed11-b597-000d3a0aa9fb}#"
+                                      },
+                                      {
+                                          "solutionComponentName":  "Azurefunctiontriggerfordatavalidation",
+                                          "solutionComponentUniqueName":  "a992a69a-83ae-ed11-83fd-000d3a0aa9fb",
+                                          "activateAsUser":  "#{activateflow.activateas.Azurefunctiontriggerfordatavalidation.a992a69a-83ae-ed11-83fd-000d3a0aa9fb}#",
+                                          "sortOrder":  "#{activateflow.order.Azurefunctiontriggerfordatavalidation.a992a69a-83ae-ed11-83fd-000d3a0aa9fb}#",
+                                          "activate":  "#{activateflow.activate.Azurefunctiontriggerfordatavalidation.a992a69a-83ae-ed11-83fd-000d3a0aa9fb}#"
+                                      }
+                                  ],
+    "ConnectorShareWithGroupTeamConfiguration":  [
+
+                                                 ],
+    "SolutionComponentOwnershipConfiguration":  [
+                                                    {
+                                                        "solutionComponentType":  29,
+                                                        "solutionComponentName":  "ListApprovedDevices",
+                                                        "solutionComponentUniqueName":  "536b155a-0df3-ed11-8848-000d3a8d918f",
+                                                        "ownerEmail":  "#{owner.ownerEmail.ListApprovedDevices.536b155a-0df3-ed11-8848-000d3a8d918f}#"
+                                                    },
+                                                    {
+                                                        "solutionComponentType":  29,
+                                                        "solutionComponentName":  "Freeform_VA_DataExtractor_Flow",
+                                                        "solutionComponentUniqueName":  "7d574569-83ae-ed11-83fd-000d3a0aa9fb",
+                                                        "ownerEmail":  "#{owner.ownerEmail.Freeform_VA_DataExtractor_Flow.7d574569-83ae-ed11-83fd-000d3a0aa9fb}#"
+                                                    },
+                                                    {
+                                                        "solutionComponentType":  29,
+                                                        "solutionComponentName":  "GetDataURI",
+                                                        "solutionComponentUniqueName":  "31b1a791-f1cd-ed11-b597-000d3a8d918f",
+                                                        "ownerEmail":  "#{owner.ownerEmail.GetDataURI.31b1a791-f1cd-ed11-b597-000d3a8d918f}#"
+                                                    },
+                                                    {
+                                                        "solutionComponentType":  29,
+                                                        "solutionComponentName":  "VBMS_RecordCreationforAlldevices",
+                                                        "solutionComponentUniqueName":  "72e7c9fb-08c7-ed11-b597-000d3a0aa9fb",
+                                                        "ownerEmail":  "#{owner.ownerEmail.VBMS_RecordCreationforAlldevices.72e7c9fb-08c7-ed11-b597-000d3a0aa9fb}#"
+                                                    },
+                                                    {
+                                                        "solutionComponentType":  29,
+                                                        "solutionComponentName":  "Azurefunctiontriggerfordatavalidation",
+                                                        "solutionComponentUniqueName":  "a992a69a-83ae-ed11-83fd-000d3a0aa9fb",
+                                                        "ownerEmail":  "#{owner.ownerEmail.Azurefunctiontriggerfordatavalidation.a992a69a-83ae-ed11-83fd-000d3a0aa9fb}#"
+                                                    }
+                                                ],
+    "FlowShareWithGroupTeamConfiguration":  [
+                                                {
+                                                    "solutionComponentName":  "ListApprovedDevices",
+                                                    "solutionComponentUniqueName":  "536b155a-0df3-ed11-8848-000d3a8d918f",
+                                                    "aadGroupTeamName":  "#{flow.sharing.ListApprovedDevices.536b155a-0df3-ed11-8848-000d3a8d918f}#"
+                                                },
+                                                {
+                                                    "solutionComponentName":  "Freeform_VA_DataExtractor_Flow",
+                                                    "solutionComponentUniqueName":  "7d574569-83ae-ed11-83fd-000d3a0aa9fb",
+                                                    "aadGroupTeamName":  "#{flow.sharing.Freeform_VA_DataExtractor_Flow.7d574569-83ae-ed11-83fd-000d3a0aa9fb}#"
+                                                },
+                                                {
+                                                    "solutionComponentName":  "GetDataURI",
+                                                    "solutionComponentUniqueName":  "31b1a791-f1cd-ed11-b597-000d3a8d918f",
+                                                    "aadGroupTeamName":  "#{flow.sharing.GetDataURI.31b1a791-f1cd-ed11-b597-000d3a8d918f}#"
+                                                },
+                                                {
+                                                    "solutionComponentName":  "VBMS_RecordCreationforAlldevices",
+                                                    "solutionComponentUniqueName":  "72e7c9fb-08c7-ed11-b597-000d3a0aa9fb",
+                                                    "aadGroupTeamName":  "#{flow.sharing.VBMS_RecordCreationforAlldevices.72e7c9fb-08c7-ed11-b597-000d3a0aa9fb}#"
+                                                },
+                                                {
+                                                    "solutionComponentName":  "Azurefunctiontriggerfordatavalidation",
+                                                    "solutionComponentUniqueName":  "a992a69a-83ae-ed11-83fd-000d3a0aa9fb",
+                                                    "aadGroupTeamName":  "#{flow.sharing.Azurefunctiontriggerfordatavalidation.a992a69a-83ae-ed11-83fd-000d3a0aa9fb}#"
+                                                }
+                                            ],
+    "AadGroupCanvasConfiguration":  [
+                                        {
+                                            "aadGroupId":  "#{canvasshare.aadGroupId.aimodel_vaclaimsreview_2d6e8}#",
+                                            "canvasNameInSolution":  "aimodel_vaclaimsreview_2d6e8",
+                                            "canvasDisplayName":  "VA Claims Review",
+                                            "roleName":  "#{canvasshare.roleName.aimodel_vaclaimsreview_2d6e8}#"
+                                        }
+                                    ],
+    "AadGroupTeamConfiguration":  [
+                                      {
+                                          "aadGroupTeamName":  "validation",
+                                          "aadGroupTeamBusinessUnitId":  "#{businessUnit.d50036ff-83ac-4629-9a63-fa43de36210b.validation}#",
+                                          "aadSecurityGroupId":  "#{groupTeam.d50036ff-83ac-4629-9a63-fa43de36210b.validation}#",
+                                          "dataverseSecurityRoleNames":  [
+                                                                             "ALM Power App Access",
+                                                                             "Basic User"
+                                                                         ]
+                                      }
+                                  ],
+    "WebhookUrls":  [
+
+                    ]
+}

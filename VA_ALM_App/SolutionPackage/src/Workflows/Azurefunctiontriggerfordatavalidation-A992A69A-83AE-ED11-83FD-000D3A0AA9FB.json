@@ -1,0 +1,943 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline_3": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_692a8"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_uiflow": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_shareduiflow_f3939"
+        },
+        "api": {
+          "name": "shared_uiflow"
+        }
+      },
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_98203"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Site Variable (vaidms_vaidms_site)": {
+          "defaultValue": "https://ncidp.sharepoint.com/sites/Prosthetics",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_vaidms_site",
+            "description": "VAIDMS SharePoint Site"
+          }
+        },
+        "Library Variable (vaidms_ClothingAllowanceLibrary)": {
+          "defaultValue": "70a0165c-6943-4e71-8595-6398ed5e11f6",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_ClothingAllowanceLibrary",
+            "description": "Clothing Allowance Library"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_file_is_created_or_modified_(properties_only)": {
+          "recurrence": {
+            "interval": 1,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "89a253ef-133d-41fa-8486-6dadbb08c37c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline_3",
+              "operationId": "GetOnUpdatedFileItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')"
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "conditions": [
+            {
+              "expression": "@or(equals(triggerBody()?['ManuallyVerified']?['value'],'Verified'), equals(triggerBody()?['Needs_x0020_Verification'],'No'))"
+            }
+          ]
+        }
+      },
+      "actions": {
+        "Get_changes_for_a_file_(properties)": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "42e702b4-c68d-4927-8622-fe9a232031f4"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline_3",
+              "operationId": "GetItemChanges",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+              "id": "@triggerOutputs()?['body/ID']",
+              "since": "@triggerOutputs()?['body/{TriggerWindowStartToken}']",
+              "includeDrafts": false
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Checking_for_changes_in_Manually_review_column": {
+          "actions": {
+            "Azure_Function_triggering_using_Http": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "8d0d8e5e-796c-4a58-8543-4e7f26fe084b"
+              },
+              "type": "Http",
+              "inputs": {
+                "method": "POST",
+                "uri": "https://vaidmsfun.azurewebsites.net/api/VerifyEligibility?code=V5_GUcFCsoU0yiPIvNXWKgzGYOJiNmEc5PxH6x72JtRGAzFutaPZwg==",
+                "body": {
+                  "SSNNumber": "@{triggerOutputs()?['body/VeteranSSN']}",
+                  "FirstName": "@{triggerOutputs()?['body/FirstName']}",
+                  "LastName": "@{triggerOutputs()?['body/LastName']}",
+                  "DeviceName1": "@{triggerOutputs()?['body/TypeofAppliance1']}",
+                  "DeviceName2": "@{triggerOutputs()?['body/TypeofAppliance2']}",
+                  "DeviceName3": "@{triggerOutputs()?['body/TypeofAppliance3']}",
+                  "DeviceName4": "@{triggerOutputs()?['body/TypeofAppliance4']}",
+                  "DeviceName5": "@{triggerOutputs()?['body/TypeofAppliance5']}"
+                }
+              }
+            },
+            "Checking_for_Veteran_not_found": {
+              "actions": {
+                "Updating_Veteran_not_found": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "b66d2a19-f9b1-4410-9712-a379e0a179f7"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_sharepointonline_3",
+                      "operationId": "PatchFileItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                    },
+                    "parameters": {
+                      "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                      "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                      "id": "@triggerOutputs()?['body/ID']",
+                      "item/FinalApprovalStatus/Value": "Pending",
+                      "item/PartiallyDenied/Value": "Yes",
+                      "item/ReasonForFinalDenial": "Veteran Record Not Found In Database"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Azure_Function_triggering_using_Http": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Parse_JSON": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "975c3f3d-749c-44f6-a8c3-b816cacb77dd"
+                    },
+                    "type": "ParseJson",
+                    "inputs": {
+                      "content": "@body('Azure_Function_triggering_using_Http')",
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "responseString": {},
+                          "rejectReason": {},
+                          "deviceList": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "deviceName": {
+                                  "type": "string"
+                                },
+                                "deviceStatusColumn": {
+                                  "type": "string"
+                                },
+                                "deviceStatus": {
+                                  "type": "string"
+                                },
+                                "devicePresentInDB": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "deviceName",
+                                "deviceStatus",
+                                "devicePresentInDB"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Apply_to_each": {
+                    "foreach": "@body('Parse_JSON')?['deviceList']",
+                    "actions": {
+                      "Compose": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "85f259ff-880e-4133-8b84-c0ff19bbc99d"
+                        },
+                        "type": "Compose",
+                        "inputs": "@items('Apply_to_each')?['deviceName']"
+                      },
+                      "Checking_for_verified": {
+                        "actions": {
+                          "Switch": {
+                            "runAfter": {},
+                            "cases": {
+                              "Case": {
+                                "case": "Device1",
+                                "actions": {
+                                  "Updating_verified_status_for_device1": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline_3",
+                                        "operationId": "PatchFileItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                        "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                        "id": "@triggerOutputs()?['body/ID']",
+                                        "item/FinalApprovalStatus/Value": "Pending",
+                                        "item/PartiallyDenied/Value": "No",
+                                        "item/VerifiedStatusforAppliance1/Value": "Approved"
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  }
+                                }
+                              },
+                              "Case_2": {
+                                "case": "Device2",
+                                "actions": {
+                                  "Updating_verified_status_column_for_device2": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline_3",
+                                        "operationId": "PatchFileItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                        "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                        "id": "@triggerOutputs()?['body/ID']",
+                                        "item/FinalApprovalStatus/Value": "Pending",
+                                        "item/PartiallyDenied/Value": "No",
+                                        "item/VerifiedStatusforAppliance2/Value": "Approved"
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  }
+                                }
+                              },
+                              "Case_3": {
+                                "case": "Device3",
+                                "actions": {
+                                  "Updating_verified_status_for_device3": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline_3",
+                                        "operationId": "PatchFileItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                        "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                        "id": "@triggerOutputs()?['body/ID']",
+                                        "item/FinalApprovalStatus/Value": "Pending",
+                                        "item/PartiallyDenied/Value": "No",
+                                        "item/VerifiedStatusforAppliance3/Value": "Approved"
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  }
+                                }
+                              },
+                              "Case_4": {
+                                "case": "Device4",
+                                "actions": {
+                                  "Updating_verified_status_for_device4": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline_3",
+                                        "operationId": "PatchFileItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                        "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                        "id": "@triggerOutputs()?['body/ID']",
+                                        "item/FinalApprovalStatus/Value": "Pending",
+                                        "item/PartiallyDenied/Value": "No",
+                                        "item/VerifiedStatusforAppliance4/Value": "Approved"
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  }
+                                }
+                              },
+                              "Case_5": {
+                                "case": "Device5",
+                                "actions": {
+                                  "Updating_verified_status_for_device5": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline_3",
+                                        "operationId": "PatchFileItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                        "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                        "id": "@triggerOutputs()?['body/ID']",
+                                        "item/FinalApprovalStatus/Value": "Pending",
+                                        "item/PartiallyDenied/Value": "No",
+                                        "item/VerifiedStatusforAppliance5/Value": "Approved"
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "default": {
+                              "actions": {}
+                            },
+                            "expression": "@items('Apply_to_each')?['deviceStatusColumn']",
+                            "metadata": {
+                              "operationMetadataId": "97c272a7-92f0-45d0-a5c7-fb9cc1317f83"
+                            },
+                            "type": "Switch"
+                          }
+                        },
+                        "runAfter": {
+                          "Compose": [
+                            "Succeeded"
+                          ]
+                        },
+                        "else": {
+                          "actions": {
+                            "Checking_for_device_not_found_status": {
+                              "actions": {
+                                "Switch_2": {
+                                  "runAfter": {},
+                                  "cases": {
+                                    "Case": {
+                                      "case": "Device1",
+                                      "actions": {
+                                        "Updating_Device_status_for_device1_as_Rejected": {
+                                          "runAfter": {},
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_sharepointonline_3",
+                                              "operationId": "PatchFileItem",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                              "id": "@triggerOutputs()?['body/ID']",
+                                              "item/VerifiedStatusforAppliance1/Value": "Not Approved",
+                                              "item/DenialReasonforDevice1": "Device Not Found"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Case_2": {
+                                      "case": "Device2",
+                                      "actions": {
+                                        "Updating_Device_status_for_device2_as_Rejected": {
+                                          "runAfter": {},
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_sharepointonline_3",
+                                              "operationId": "PatchFileItem",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                              "id": "@triggerOutputs()?['body/ID']",
+                                              "item/VerifiedStatusforAppliance2/Value": "Not Approved",
+                                              "item/DenialReasonforDevice2": "Device Not Found"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Case_3": {
+                                      "case": "Device3",
+                                      "actions": {
+                                        "Updating_Device_status_for_device3_as_Rejected": {
+                                          "runAfter": {},
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_sharepointonline_3",
+                                              "operationId": "PatchFileItem",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                              "id": "@triggerOutputs()?['body/ID']",
+                                              "item/FinalApprovalStatus/Value": "Pending",
+                                              "item/VerifiedStatusforAppliance3/Value": "Not Approved",
+                                              "item/DenialReasonforDevice3": "Device Not Found"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Case_4": {
+                                      "case": "Device4",
+                                      "actions": {
+                                        "Updating_Device_status_for_device4_as_Rejected": {
+                                          "runAfter": {},
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_sharepointonline_3",
+                                              "operationId": "PatchFileItem",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                              "id": "@triggerOutputs()?['body/ID']",
+                                              "item/FinalApprovalStatus/Value": "Pending",
+                                              "item/VerifiedStatusforAppliance4/Value": "Not Approved",
+                                              "item/DenialReasonforDevice4": "Device Not Found"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Case_5": {
+                                      "case": "Device5",
+                                      "actions": {
+                                        "Updating_Device_status_for_device5_as_Rejected": {
+                                          "runAfter": {},
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_sharepointonline_3",
+                                              "operationId": "PatchFileItem",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                              "id": "@triggerOutputs()?['body/ID']",
+                                              "item/FinalApprovalStatus/Value": "Pending",
+                                              "item/VerifiedStatusforAppliance5/Value": "Not Approved",
+                                              "item/DenialReasonforDevice5": "Device Not Found"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "default": {
+                                    "actions": {}
+                                  },
+                                  "expression": "@items('Apply_to_each')?['deviceStatusColumn']",
+                                  "metadata": {
+                                    "operationMetadataId": "a54b2790-b83d-47d1-99c0-a677813ab322"
+                                  },
+                                  "type": "Switch"
+                                }
+                              },
+                              "runAfter": {},
+                              "else": {
+                                "actions": {
+                                  "Checking_for_Service_not_connected": {
+                                    "actions": {
+                                      "Switch_3": {
+                                        "runAfter": {},
+                                        "cases": {
+                                          "Case": {
+                                            "case": "Device1",
+                                            "actions": {
+                                              "Updating_Device1_status_as_Rejected": {
+                                                "runAfter": {},
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                  "host": {
+                                                    "connectionName": "shared_sharepointonline_3",
+                                                    "operationId": "PatchFileItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                  },
+                                                  "parameters": {
+                                                    "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                                    "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                                    "id": "@triggerOutputs()?['body/ID']",
+                                                    "item/VerifiedStatusforAppliance1/Value": "Not Approved",
+                                                    "item/DenialReasonforDevice1": "Not Service Connected"
+                                                  },
+                                                  "authentication": "@parameters('$authentication')"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "Case_2": {
+                                            "case": "Device2",
+                                            "actions": {
+                                              "Updating_Device2_status_as_Rejected": {
+                                                "runAfter": {},
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                  "host": {
+                                                    "connectionName": "shared_sharepointonline_3",
+                                                    "operationId": "PatchFileItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                  },
+                                                  "parameters": {
+                                                    "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                                    "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                                    "id": "@triggerOutputs()?['body/ID']",
+                                                    "item/VerifiedStatusforAppliance2/Value": "Not Approved",
+                                                    "item/DenialReasonforDevice2": "Not Service Connected"
+                                                  },
+                                                  "authentication": "@parameters('$authentication')"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "Case_3": {
+                                            "case": "Device3",
+                                            "actions": {
+                                              "Updating_Device3_status_as_Rejected": {
+                                                "runAfter": {},
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                  "host": {
+                                                    "connectionName": "shared_sharepointonline_3",
+                                                    "operationId": "PatchFileItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                  },
+                                                  "parameters": {
+                                                    "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                                    "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                                    "id": "@triggerOutputs()?['body/ID']",
+                                                    "item/VerifiedStatusforAppliance3/Value": "Not Approved",
+                                                    "item/DenialReasonforDevice3": "Not Service Connected"
+                                                  },
+                                                  "authentication": "@parameters('$authentication')"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "Case_4": {
+                                            "case": "Device4",
+                                            "actions": {
+                                              "Updating_Device4_status_as_Rejected": {
+                                                "runAfter": {},
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                  "host": {
+                                                    "connectionName": "shared_sharepointonline_3",
+                                                    "operationId": "PatchFileItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                  },
+                                                  "parameters": {
+                                                    "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                                    "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                                    "id": "@triggerOutputs()?['body/ID']",
+                                                    "item/VerifiedStatusforAppliance4/Value": "Not Approved",
+                                                    "item/DenialReasonforDevice4": "Not Service Connected"
+                                                  },
+                                                  "authentication": "@parameters('$authentication')"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "Case_5": {
+                                            "case": "Device5",
+                                            "actions": {
+                                              "Updating_Device5_status_as_Rejected": {
+                                                "runAfter": {},
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                  "host": {
+                                                    "connectionName": "shared_sharepointonline_3",
+                                                    "operationId": "PatchFileItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                  },
+                                                  "parameters": {
+                                                    "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                                    "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                                    "id": "@triggerOutputs()?['body/ID']",
+                                                    "item/VerifiedStatusforAppliance5/Value": "Not Approved",
+                                                    "item/DenialReasonforDevice5": "Not Service Connected"
+                                                  },
+                                                  "authentication": "@parameters('$authentication')"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "default": {
+                                          "actions": {}
+                                        },
+                                        "expression": "@items('Apply_to_each')?['deviceStatusColumn']",
+                                        "metadata": {
+                                          "operationMetadataId": "56ec7eaf-c388-4916-aced-ecaccb6096f4"
+                                        },
+                                        "type": "Switch"
+                                      }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                      "equals": [
+                                        "@items('Apply_to_each')?['deviceStatus']",
+                                        "Not Service Connected"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "516cb4e6-729b-44d1-9cb6-43a265c9d987"
+                                    },
+                                    "type": "If"
+                                  }
+                                }
+                              },
+                              "expression": {
+                                "equals": [
+                                  "@items('Apply_to_each')?['deviceStatus']",
+                                  "Device Not Found"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "364a26b2-a85f-49f1-a115-99b2eae7d45c"
+                              },
+                              "type": "If"
+                            }
+                          }
+                        },
+                        "expression": {
+                          "equals": [
+                            "@items('Apply_to_each')?['deviceStatus']",
+                            "Verified"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "dc56b9d4-7e2f-4a70-96ca-383612ad65f2"
+                        },
+                        "type": "If"
+                      }
+                    },
+                    "runAfter": {
+                      "Parse_JSON": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "d848029a-026b-4747-b809-02df60e42090"
+                    },
+                    "type": "Foreach"
+                  },
+                  "Checking_for_partial_rejection": {
+                    "actions": {
+                      "Updating_partial_denial_column_with_reason": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "b8b04b27-1e5f-4193-be6d-b5c0bb76b309"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_sharepointonline_3",
+                            "operationId": "PatchFileItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                          },
+                          "parameters": {
+                            "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                            "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                            "id": "@triggerOutputs()?['body/ID']",
+                            "item/FinalApprovalStatus/Value": "Pending",
+                            "item/PartiallyDenied/Value": "Yes",
+                            "item/ReasonForPartialDenied": "@body('Parse_JSON')?['rejectReason']"
+                          },
+                          "authentication": "@parameters('$authentication')"
+                        }
+                      }
+                    },
+                    "runAfter": {
+                      "Checking_for_fully_verified_claim": [
+                        "Succeeded"
+                      ]
+                    },
+                    "expression": {
+                      "equals": [
+                        "@body('Azure_Function_triggering_using_Http')?['responseString']",
+                        "Rejected"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "5f44aa35-9e13-4043-b3c0-4225661f3729"
+                    },
+                    "type": "If"
+                  },
+                  "Checking_for_fully_verified_claim": {
+                    "actions": {
+                      "Get_file_properties": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "47f3ce47-df36-42a7-94cd-521683c50e51"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_sharepointonline_3",
+                            "operationId": "GetFileItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                          },
+                          "parameters": {
+                            "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                            "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                            "id": "@triggerOutputs()?['body/ID']"
+                          },
+                          "authentication": "@parameters('$authentication')"
+                        }
+                      },
+                      "Run_a_flow_built_with_Power_Automate_for_desktop_2": {
+                        "runAfter": {
+                          "Get_file_properties": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "14aa0c00-1d4a-4732-b1bf-4cab0990d167"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_uiflow",
+                            "operationId": "RunUIFlow_V2",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_uiflow"
+                          },
+                          "parameters": {
+                            "uiFlowId": "ffd9e822-49b7-4319-b6ce-0e82c68dd7aa",
+                            "runMode": "attended",
+                            "item/SSNIP": "@triggerOutputs()?['body/VeteranSSN']",
+                            "item/fnameIP": "@triggerOutputs()?['body/FirstName']",
+                            "item/lnameIP": "@triggerOutputs()?['body/LastName']",
+                            "item/mnameIP": "@triggerOutputs()?['body/MiddleName']",
+                            "item/addressIP": "@triggerOutputs()?['body/MailingAddressofVeteran']",
+                            "item/emailIP": "@outputs('Get_file_properties')?['body/VeteranEmailAddress']",
+                            "item/calendaryearIP": "@triggerOutputs()?['body/CalendarYearForApplication']",
+                            "item/phoneIP": "@triggerOutputs()?['body/VeteranTelephoneNumber']",
+                            "item/claimStatusIP": "Approved",
+                            "item/device1IP": "@outputs('Get_file_properties')?['body/TypeofAppliance1']",
+                            "item/device2IP": "@outputs('Get_file_properties')?['body/TypeofAppliance2']",
+                            "item/device3IP": "@triggerOutputs()?['body/TypeofAppliance3']",
+                            "item/device4IP": "@triggerOutputs()?['body/TypeofAppliance4']",
+                            "item/device5IP": "@triggerOutputs()?['body/TypeofAppliance5']",
+                            "item/deviceStatus1": "@outputs('Get_file_properties')?['body/VerifiedStatusforAppliance1/Value']",
+                            "item/deviceStatus2": "@outputs('Get_file_properties')?['body/VerifiedStatusforAppliance2/Value']",
+                            "item/deviceStatus3": "@outputs('Get_file_properties')?['body/VerifiedStatusforAppliance3/Value']",
+                            "item/deviceStatus4": "@outputs('Get_file_properties')?['body/VerifiedStatusforAppliance4/Value']",
+                            "item/deviceStatus5": "@outputs('Get_file_properties')?['body/VerifiedStatusforAppliance5/Value']",
+                            "item/denialReason1": "@outputs('Get_file_properties')?['body/DenialReasonforDevice1']",
+                            "item/denialReason2": "@outputs('Get_file_properties')?['body/DenialReasonforDevice2']",
+                            "item/denialReason3": "@outputs('Get_file_properties')?['body/DenialReasonforDevice3']",
+                            "item/denialReason4": "@outputs('Get_file_properties')?['body/DenialReasonforDevice4']",
+                            "item/denialReason5": "@outputs('Get_file_properties')?['body/DenialReasonforDevice5']"
+                          },
+                          "authentication": "@parameters('$authentication')"
+                        }
+                      },
+                      "Condition": {
+                        "actions": {
+                          "Update_final_approval_2": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "8a4683ba-ca91-4153-8791-a049a16245e1"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "connectionName": "shared_sharepointonline_3",
+                                "operationId": "PatchFileItem",
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                              },
+                              "parameters": {
+                                "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                "id": "@triggerOutputs()?['body/ID']",
+                                "item/FinalApprovalStatus/Value": "Pending",
+                                "item/RPAStatus": "Failed",
+                                "item/RPAError": "@outputs('Run_a_flow_built_with_Power_Automate_for_desktop_2')?['body/FileNotFoundError']"
+                              },
+                              "authentication": "@parameters('$authentication')"
+                            }
+                          }
+                        },
+                        "runAfter": {
+                          "Run_a_flow_built_with_Power_Automate_for_desktop_2": [
+                            "Succeeded"
+                          ]
+                        },
+                        "else": {
+                          "actions": {
+                            "Update_file_properties": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "33facb1e-7190-41cd-b43f-c50d1c16b148"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connectionName": "shared_sharepointonline",
+                                  "operationId": "PatchFileItem",
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                  "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                                  "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                                  "id": "@outputs('Get_file_properties')?['body/ID']",
+                                  "item/FinalApprovalStatus/Value": "Approved",
+                                  "item/PartiallyDenied/Value": "No",
+                                  "item/RPAStatus": "Success"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                              }
+                            }
+                          }
+                        },
+                        "expression": {
+                          "not": {
+                            "equals": [
+                              "@length(outputs('Run_a_flow_built_with_Power_Automate_for_desktop_2')?['body/FileNotFoundError'])",
+                              0
+                            ]
+                          }
+                        },
+                        "metadata": {
+                          "operationMetadataId": "25180b96-c98f-484c-83bf-b5b6b2b01b71"
+                        },
+                        "type": "If"
+                      }
+                    },
+                    "runAfter": {
+                      "Apply_to_each": [
+                        "Succeeded"
+                      ]
+                    },
+                    "expression": {
+                      "contains": [
+                        "@body('Azure_Function_triggering_using_Http')?['responseString']",
+                        "Found"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "e87b8312-2edb-41eb-ae82-b6ceeae0ad51"
+                    },
+                    "type": "If"
+                  }
+                }
+              },
+              "expression": {
+                "contains": [
+                  "@body('Azure_Function_triggering_using_Http')?['responseString']",
+                  "Veteran Not Found"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c4625d0a-05bf-499f-8d3b-95feaa00f519"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Get_changes_for_a_file_(properties)": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@outputs('Get_changes_for_a_file_(properties)')?['body/ColumnHasChanged/ManuallyVerified']",
+                  true
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Get_changes_for_a_file_(properties)')?['body/ColumnHasChanged/Needs_x0020_Verification']",
+                  true
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "14309417-ea15-4978-aea4-948b9a8a1ee7"
+          },
+          "type": "If"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}
