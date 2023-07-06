@@ -112,8 +112,7 @@
                                           "aadGroupTeamBusinessUnitId":  "#{businessUnit.39cc91bb-59ae-4c7d-acfc-3a7faa59313e.Validation}#",
                                           "aadSecurityGroupId":  "#{groupTeam.39cc91bb-59ae-4c7d-acfc-3a7faa59313e.Validation}#",
                                           "dataverseSecurityRoleNames":  [
-                                                                             "Basic User",
-                                                                             "ALM Power App Access"
+                                                                             "Basic User"
                                                                          ]
                                       }
                                   ],
