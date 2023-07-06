@@ -1,0 +1,56 @@
+{
+    "EnvironmentVariables":  [
+                                 {
+                                     "SchemaName":  "vaidms_vaidms_site",
+                                     "Value":  "#{environmentvariable.vaidms_vaidms_site}#"
+                                 },
+                                 {
+                                     "SchemaName":  "vaidms_ClothingAllowanceLibrary",
+                                     "Value":  "#{environmentvariable.vaidms_ClothingAllowanceLibrary}#"
+                                 }
+                             ],
+    "ConnectionReferences":  [
+                                 {
+                                     "LogicalName":  "new_shareduiflow_22cc3",
+                                     "ConnectionId":  "#{connectionreference.new_shareduiflow_22cc3}#",
+                                     "ConnectorId":  "/providers/Microsoft.PowerApps/apis/shared_uiflow",
+                                     "ConnectionOwner":  "#{connectionreference.user.new_shareduiflow_22cc3}#"
+                                 },
+                                 {
+                                     "LogicalName":  "new_shareduiflow_f3939",
+                                     "ConnectionId":  "#{connectionreference.new_shareduiflow_f3939}#",
+                                     "ConnectorId":  "/providers/Microsoft.PowerApps/apis/shared_uiflow",
+                                     "ConnectionOwner":  "#{connectionreference.user.new_shareduiflow_f3939}#"
+                                 },
+                                 {
+                                     "LogicalName":  "new_sharedcommondataserviceforapps_36124",
+                                     "ConnectionId":  "#{connectionreference.new_sharedcommondataserviceforapps_36124}#",
+                                     "ConnectorId":  "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                     "ConnectionOwner":  "#{connectionreference.user.new_sharedcommondataserviceforapps_36124}#"
+                                 },
+                                 {
+                                     "LogicalName":  "new_sharedsharepointonline_f12e8",
+                                     "ConnectionId":  "#{connectionreference.new_sharedsharepointonline_f12e8}#",
+                                     "ConnectorId":  "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                     "ConnectionOwner":  "#{connectionreference.user.new_sharedsharepointonline_f12e8}#"
+                                 },
+                                 {
+                                     "LogicalName":  "new_sharedsharepointonline_21d30",
+                                     "ConnectionId":  "#{connectionreference.new_sharedsharepointonline_21d30}#",
+                                     "ConnectorId":  "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                     "ConnectionOwner":  "#{connectionreference.user.new_sharedsharepointonline_21d30}#"
+                                 },
+                                 {
+                                     "LogicalName":  "new_sharedsharepointonline_692a8",
+                                     "ConnectionId":  "#{connectionreference.new_sharedsharepointonline_692a8}#",
+                                     "ConnectorId":  "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                     "ConnectionOwner":  "#{connectionreference.user.new_sharedsharepointonline_692a8}#"
+                                 },
+                                 {
+                                     "LogicalName":  "new_sharedsharepointonline_98203",
+                                     "ConnectionId":  "#{connectionreference.new_sharedsharepointonline_98203}#",
+                                     "ConnectorId":  "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                     "ConnectionOwner":  "#{connectionreference.user.new_sharedsharepointonline_98203}#"
+                                 }
+                             ]
+}

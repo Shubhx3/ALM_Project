@@ -1,0 +1,22 @@
+Screen1 As screen:
+    LoadingSpinnerColor: =RGBA(0, 120, 212, 1)
+
+    "TabList1 As 'Tab list'.pcfdataset":
+        DisplayMode: =DisplayMode.Edit
+        Height: =62
+        Items: |-
+            =["#1","#2","#3","#4","#5"]
+        RenderSize: ='PowerApps.CoreControls.TabList.RenderSize'.Large
+        Width: =582
+        X: =40
+        Y: =21
+        ZIndex: =1
+
+        Value1 As pcfDataField.textualColumn:
+            FieldDisplayName: ="Value"
+            FieldName: ="Value"
+            FieldType: ="s"
+            FieldVariantName: ="textualColumn"
+            Order: =1
+            ZIndex: =1
+

@@ -1,0 +1,80 @@
+"'Header Components' As CanvasComponent":
+    Fill: =RGBA(0, 0, 0, 0)
+    Height: =61
+    Refresh: |-
+        ={SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true}
+    Width: =1536
+    X: =0
+    Y: =0
+    ZIndex: =1
+
+    "'PowerApps Header' As htmlViewer":
+        Height: =61
+        HtmlText: |-
+            ="<div style=' 
+            align-items: center;
+            padding: 10px 12px 8px;
+            gap: 0px;
+            position: absolute;
+            width: 1536px;
+            height: 52px;
+            left: 0px;
+            top: 0px;
+            font-size:26px;
+            color: #8D308D;
+            font-weight: 600;
+            text-align: center;
+            /* PA UI kit/Background/Shape */
+            background: linear-gradient(108.27deg, rgba(228, 140, 199, 0.21) 51.82%, rgba(139, 39, 139, 0.7) 95.56%);
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 7px;
+            transform: rotate(0.00deg);
+            '>
+            <center>
+            VA Claim Form for Manual Verification
+            </center>
+            </div>"
+        Width: =1536
+        ZIndex: =1
+
+    Refresh As icon.Reload:
+        AccessibleLabel: ="Refresh Icon"
+        BorderColor: =RGBA(166, 166, 166, 1)
+        Color: =RGBA(141,48,141, 1)
+        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+        DisabledColor: =RGBA(220, 220, 220, 1)
+        DisabledFill: =RGBA(0, 0, 0, 0)
+        FocusedBorderThickness: =4
+        Height: =32
+        HoverBorderColor: =RGBA(0, 0, 0, 0)
+        HoverColor: =ColorFade(RGBA(0, 120, 212, 1), -30%)
+        HoverFill: =RGBA(0, 0, 0, 0)
+        Icon: =Icon.Reload
+        OnSelect: =Refresh(Parent.Refresh)
+        PressedBorderColor: =RGBA(0, 0, 0, 0)
+        PressedColor: =ColorFade(RGBA(0, 120, 212, 1), -30%)
+        PressedFill: =RGBA(0, 0, 0, 0)
+        TabIndex: =0
+        X: =433
+        Y: =13
+        ZIndex: =3
+
+    Image6 As image:
+        BorderColor: =RGBA(0, 0, 0, 0)
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =2
+        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+        DisabledFill: =RGBA(0, 0, 0, 0)
+        FocusedBorderThickness: =4
+        Height: =61
+        HoverBorderColor: =RGBA(0, 0, 0, 0)
+        HoverFill: =RGBA(0, 0, 0, 0)
+        Image: ='nc logo'
+        PressedBorderColor: =RGBA(0, 0, 0, 0)
+        PressedFill: =RGBA(0, 0, 0, 0)
+        RadiusBottomRight: =5
+        RadiusTopRight: =5
+        Width: =61
+        X: =1475
+        ZIndex: =4
+
