@@ -108,12 +108,12 @@
                                     ],
     "AadGroupTeamConfiguration":  [
                                       {
-                                          "aadGroupTeamName":  "Validation",
-                                          "aadGroupTeamBusinessUnitId":  "#{businessUnit.df69807f-6595-4ffb-94a1-f1570c06a3e3.Validation}#",
-                                          "aadSecurityGroupId":  "#{groupTeam.df69807f-6595-4ffb-94a1-f1570c06a3e3.Validation}#",
+                                          "aadGroupTeamName":  "Validate",
+                                          "aadGroupTeamBusinessUnitId":  "#{businessUnit.39cc91bb-59ae-4c7d-acfc-3a7faa59313e.Validate}#",
+                                          "aadSecurityGroupId":  "#{groupTeam.39cc91bb-59ae-4c7d-acfc-3a7faa59313e.Validate}#",
                                           "dataverseSecurityRoleNames":  [
-                                                                             "Basic User",
-                                                                             "ALM Power App Access"
+                                                                             "ALM Power App Access",
+                                                                             "Basic User"
                                                                          ]
                                       }
                                   ],
