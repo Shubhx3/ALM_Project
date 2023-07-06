@@ -1,0 +1,226 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_692a8"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_sharepointonline_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_f12e8"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Site Variable (vaidms_vaidms_site)": {
+          "defaultValue": "https://idpnc.sharepoint.com/sites/Prosthetics",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_vaidms_site",
+            "description": "VAIDMS SharePoint Site"
+          }
+        },
+        "Library Variable (vaidms_ClothingAllowanceLibrary)": {
+          "defaultValue": "d64a946c-099b-4cd6-a28a-7dba6e243bf2",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_ClothingAllowanceLibrary",
+            "description": "Clothing Allowance Library"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_file_is_created_or_modified_(properties_only)": {
+          "recurrence": {
+            "interval": 1,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "aa58ebdb-1271-498c-9b7d-4d9fe372a401"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetOnUpdatedFileItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')"
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "conditions": [
+            {
+              "expression": "@or(equals(triggerBody()?['FinalApprovalStatus']?['value'],'Partial Approved' ), equals(triggerBody()?['FinalApprovalStatus']?['value'],'Approved'))"
+            }
+          ]
+        }
+      },
+      "actions": {
+        "Get_changes_for_an_item_or_a_file_(properties_only)": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "fa9f860e-b668-4b8d-bcf4-e61820809c0f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItemChanges",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+              "id": "@triggerOutputs()?['body/ID']",
+              "since": "@triggerOutputs()?['body/{TriggerWindowStartToken}']",
+              "includeDrafts": false
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Checking_for_change_in_Approval_status_column": {
+          "actions": {
+            "Get_file_properties": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "747455b6-ef5c-4b38-a777-5ef21b704903"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline",
+                  "operationId": "GetFileItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                  "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                  "id": "@triggerOutputs()?['body/ID']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Update_file_properties": {
+              "runAfter": {
+                "Compose": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "463a0850-cf22-470e-8be7-8710b6951425"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline_1",
+                  "operationId": "PatchFileItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                  "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                  "id": "@outputs('Get_file_properties')?['body/ID']",
+                  "item/ListofApprovedDevices": "@outputs('Compose')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Compose": {
+              "runAfter": {
+                "Get_file_properties": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3cf15884-057b-491d-be2d-cb07c888f837"
+              },
+              "type": "Compose",
+              "inputs": "@replace(substring(variables('ListApprovedDevices'),0,add(length(variables('ListApprovedDevices')),-3)),'   ',variables('Newline'))"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_2": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Get_changes_for_an_item_or_a_file_(properties_only)')?['body/ColumnHasChanged/FinalApprovalStatus']",
+              true
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8f064f70-bfa8-4495-a47b-99eb6ab1ecd7"
+          },
+          "type": "If"
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "Get_changes_for_an_item_or_a_file_(properties_only)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ca7a41e6-5f75-4cf0-9746-ccce99ce04dc"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ListApprovedDevices",
+                "type": "string",
+                "value": "@triggerOutputs()?['body/Name_x0020_of_x0020_Approved_x0020_Devices']"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_2": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e951fa0d-dba0-411d-991d-241dfbc46557"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Newline",
+                "type": "string",
+                "value": "\n"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

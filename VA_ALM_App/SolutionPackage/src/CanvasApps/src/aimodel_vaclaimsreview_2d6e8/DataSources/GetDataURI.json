@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "4163be85-094c-4cda-b318-c70acefb3d8a",
+    "Name": "GetDataURI",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "31b1a791-f1cd-ed11-b597-000d3a8d918f"
+  }
+]

@@ -1,0 +1,207 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_692a8"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_uiflow": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_shareduiflow_22cc3"
+        },
+        "api": {
+          "name": "shared_uiflow"
+        }
+      },
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_21d30"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Site Variable (vaidms_vaidms_site)": {
+          "defaultValue": "https://idpnc.sharepoint.com/sites/Prosthetics",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_vaidms_site",
+            "description": "VAIDMS SharePoint Site"
+          }
+        },
+        "Library Variable (vaidms_ClothingAllowanceLibrary)": {
+          "defaultValue": "d64a946c-099b-4cd6-a28a-7dba6e243bf2",
+          "type": "String",
+          "metadata": {
+            "schemaName": "vaidms_ClothingAllowanceLibrary",
+            "description": "Clothing Allowance Library"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_file_is_created_or_modified_(properties_only)": {
+          "recurrence": {
+            "interval": 1,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "03c4ef75-ee21-423a-9f9b-76acd26283b7"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetOnUpdatedFileItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')"
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "conditions": [
+            {
+              "expression": "@equals(triggerBody()?['ApprovalByAdmin']?['value'],'Yes')"
+            }
+          ]
+        }
+      },
+      "actions": {
+        "Get_changes_for_a_file_(properties)": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "42e702b4-c68d-4927-8622-fe9a232031f4"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline_1",
+              "operationId": "GetItemChanges",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+              "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+              "id": "@triggerOutputs()?['body/ID']",
+              "since": "@triggerOutputs()?['body/{TriggerWindowStartToken}']",
+              "includeDrafts": false
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Checking_for_column_change": {
+          "actions": {
+            "Run_a_flow_built_with_Power_Automate_for_desktop": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "e9bd9213-961d-4d85-8bbd-dc1d8033e083"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_uiflow",
+                  "operationId": "RunUIFlow_V2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_uiflow"
+                },
+                "parameters": {
+                  "uiFlowId": "ffd9e822-49b7-4319-b6ce-0e82c68dd7aa",
+                  "runMode": "attended",
+                  "item/SSNIP": "@triggerOutputs()?['body/VeteranSSN']",
+                  "item/fnameIP": "@triggerOutputs()?['body/FirstName']",
+                  "item/lnameIP": "@triggerOutputs()?['body/LastName']",
+                  "item/mnameIP": "@triggerOutputs()?['body/MiddleName']",
+                  "item/addressIP": "@triggerOutputs()?['body/MailingAddressofVeteran']",
+                  "item/emailIP": "@triggerOutputs()?['body/VeteranEmailAddress']",
+                  "item/calendaryearIP": "@triggerOutputs()?['body/CalendarYearForApplication']",
+                  "item/phoneIP": "@triggerOutputs()?['body/VeteranTelephoneNumber']",
+                  "item/claimStatusIP": "Approved",
+                  "item/device1IP": "@triggerOutputs()?['body/TypeofAppliance1']",
+                  "item/device2IP": "@triggerOutputs()?['body/TypeofAppliance2']",
+                  "item/device3IP": "@triggerOutputs()?['body/TypeofAppliance3']",
+                  "item/device4IP": "@triggerOutputs()?['body/TypeofAppliance4']",
+                  "item/device5IP": "@triggerOutputs()?['body/TypeofAppliance5']",
+                  "item/deviceStatus1": "@triggerOutputs()?['body/VerifiedStatusforAppliance1/Value']",
+                  "item/deviceStatus2": "@triggerOutputs()?['body/VerifiedStatusforAppliance2/Value']",
+                  "item/deviceStatus3": "@triggerOutputs()?['body/VerifiedStatusforAppliance3/Value']",
+                  "item/deviceStatus4": "@triggerOutputs()?['body/VerifiedStatusforAppliance4/Value']",
+                  "item/deviceStatus5": "@triggerOutputs()?['body/VerifiedStatusforAppliance5/Value']",
+                  "item/denialReason1": "@triggerOutputs()?['body/DenialReasonforDevice1']",
+                  "item/denialReason2": "@triggerOutputs()?['body/DenialReasonforDevice2']",
+                  "item/denialReason3": "@triggerOutputs()?['body/DenialReasonforDevice3']",
+                  "item/denialReason4": "@triggerOutputs()?['body/DenialReasonforDevice4']",
+                  "item/denialReason5": "@triggerOutputs()?['body/DenialReasonforDevice5']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Update_approval": {
+              "runAfter": {
+                "Run_a_flow_built_with_Power_Automate_for_desktop": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "8a4683ba-ca91-4153-8791-a049a16245e1"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline_1",
+                  "operationId": "PatchFileItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "@parameters('Site Variable (vaidms_vaidms_site)')",
+                  "table": "@parameters('Library Variable (vaidms_ClothingAllowanceLibrary)')",
+                  "id": "@triggerOutputs()?['body/ID']",
+                  "item/FinalApprovalStatus/Value": "Approved"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_changes_for_a_file_(properties)": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Get_changes_for_a_file_(properties)')?['body/ColumnHasChanged/ApprovalByAdmin']",
+              true
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1c498b81-620a-4d98-81e0-16930e569348"
+          },
+          "type": "If"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

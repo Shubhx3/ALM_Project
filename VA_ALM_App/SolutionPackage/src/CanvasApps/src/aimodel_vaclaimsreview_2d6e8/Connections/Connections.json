@@ -1,0 +1,76 @@
+{
+  "3fcf45c5-1cbf-4422-a477-61cc3e5b19f2": {
+    "connectionRef": {
+      "apiTier": "Standard",
+      "displayName": "Logic flows",
+      "iconUri": "https://connectoricons-prod.azureedge.net/u/shgogna/logicflows-specialbuild/1.0.1633.3284/logicflows/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_logicflows",
+      "parameterHints": {
+        "67f4d2bf-e11f-4913-8935-e8bcc3bb93f0": {
+          "value": "shared_sharepointonline"
+        },
+        "workflowEntityId": {
+          "value": "31b1a791-f1cd-ed11-b597-000d3a8d918f"
+        },
+        "workflowName": {
+          "value": "ca7770b6-393c-4ed1-8509-6607904aecb0"
+        }
+      },
+      "parameterHintsV2": {
+        "shared_sharepointonline": {
+          "value": "67f4d2bf-e11f-4913-8935-e8bcc3bb93f0"
+        },
+        "workflowEntityId": {
+          "value": "31b1a791-f1cd-ed11-b597-000d3a8d918f"
+        },
+        "workflowName": {
+          "value": "ca7770b6-393c-4ed1-8509-6607904aecb0"
+        }
+      }
+    },
+    "datasets": {},
+    "dataSources": [
+      "GetDataURI"
+    ],
+    "dependencies": {
+      "shared_sharepointonline": "67f4d2bf-e11f-4913-8935-e8bcc3bb93f0"
+    },
+    "dependents": [],
+    "id": "3fcf45c5-1cbf-4422-a477-61cc3e5b19f2"
+  },
+  "67f4d2bf-e11f-4913-8935-e8bcc3bb93f0": {
+    "connectionRef": {
+      "apiTier": "Standard",
+      "displayName": "SharePoint",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1627/1.0.1627.3238/sharepointonline/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "parameterHints": {},
+      "parameterHintsV2": {}
+    },
+    "datasets": {
+      "https://idpnc.sharepoint.com/sites/Prosthetics_vaidms_vaidms_site": {
+        "datasetOverride": {
+          "environmentVariableName": "vaidms_vaidms_site",
+          "name": "https://idpnc.sharepoint.com/sites/Prosthetics"
+        },
+        "dataSources": {
+          "Library Variable": {
+            "tableName": "d64a946c-099b-4cd6-a28a-7dba6e243bf2",
+            "tableNameOverride": {
+              "environmentVariableName": "vaidms_ClothingAllowanceLibrary",
+              "name": "d64a946c-099b-4cd6-a28a-7dba6e243bf2"
+            }
+          }
+        }
+      }
+    },
+    "dataSources": [
+      "Library Variable"
+    ],
+    "dependencies": {},
+    "dependents": [
+      "3fcf45c5-1cbf-4422-a477-61cc3e5b19f2"
+    ],
+    "id": "67f4d2bf-e11f-4913-8935-e8bcc3bb93f0"
+  }
+}

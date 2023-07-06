@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <CanvasApps />
+  <AIModels>
+    <AIModel>
+      <msdyn_aimodelid>{55e0d8ac-da51-41d5-9bc4-d606c17a62bb}</msdyn_aimodelid>
+      <msdyn_name>Freeform_VA_MetaData_Extractor_Model</msdyn_name>
+      <msdyn_templateid>{10707e4e-1d56-e911-8194-000d3a6cd5a5}</msdyn_templateid>
+      <statecode>1</statecode>
+      <statuscode>1</statuscode>
+      <IsCustomizable>1</IsCustomizable>
+      <msdyn_activerunconfigurationid>{b61f475b-afc8-ed11-b596-000d3a0aa9fb}</msdyn_activerunconfigurationid>
+      <AIConfigurations>
+        <AIConfiguration>
+          <msdyn_aiconfigurationid>{b61f475b-afc8-ed11-b596-000d3a0aa9fb}</msdyn_aiconfigurationid>
+          <msdyn_customconfiguration>{"version":"DocumentScanning-2","labels":{"Last Name":{"defaultId":"297af143-9d37-4b59-8c83-a4c313353498","fieldType":"string","layoutSpecificIds":{}},"First Name":{"defaultId":"7d7f1c31-9dd3-4926-85a5-d1c6fdb4fc5d","fieldType":"string","layoutSpecificIds":{}},"Middle Name":{"defaultId":"f7587bda-63cc-4939-aec4-d0e45db32ae6","fieldType":"string","layoutSpecificIds":{}},"Veteran SSN":{"defaultId":"bcdb727d-5ce8-4e30-a043-b805b3c0debf","fieldType":"string","layoutSpecificIds":{}},"Mailing Address":{"defaultId":"44734518-97d6-401a-a9a8-8f87b9f05917","fieldType":"string","layoutSpecificIds":{}},"Telephone Number":{"defaultId":"4545e50f-8468-4d83-bd94-3c2713895305","fieldType":"string","layoutSpecificIds":{}},"Email Address":{"defaultId":"2beee635-d6ff-4e83-a82b-0482571bcbcf","fieldType":"string","layoutSpecificIds":{}},"Calendar Year":{"defaultId":"41783793-6136-4c09-91ad-24a28f8a4380","fieldType":"string","layoutSpecificIds":{}},"Claim Date":{"defaultId":"566c9534-6aea-4167-b008-d0cbe3a27bd4","fieldType":"string","layoutSpecificIds":{}},"Appliance1":{"defaultId":"8945ecbf-dda3-4f9f-95da-732269cf5a58","fieldType":"string","layoutSpecificIds":{}},"Service Connected1":{"defaultId":"4fc0a926-03f4-4679-b420-afe8d2c2f075","fieldType":"string","layoutSpecificIds":{}},"Issue Date1":{"defaultId":"3c8c490c-b35d-4a58-9756-f4125a77cfda","fieldType":"string","layoutSpecificIds":{}},"VA Facility1":{"defaultId":"2c2259e9-d838-42a5-b66c-1d5cb4135362","fieldType":"string","layoutSpecificIds":{}},"Impected Location1":{"defaultId":"db201fce-cb61-4929-8d8c-c62882562d7a","fieldType":"string","layoutSpecificIds":{}},"Appliance2":{"defaultId":"4b299921-9e11-4c2a-843c-ff2837ceabce","fieldType":"string","layoutSpecificIds":{}},"Service Connected2":{"defaultId":"ed6c3a23-6a31-4a9c-b034-879f5290ae93","fieldType":"string","layoutSpecificIds":{}},"Issue Date2":{"defaultId":"0a1dbb3a-91f3-4166-8cd4-36d69e45c482","fieldType":"string","layoutSpecificIds":{}},"VA Facility2":{"defaultId":"eac4bc16-4cda-43be-b396-5d9ff4cc3b0f","fieldType":"string","layoutSpecificIds":{}},"Impected Location2":{"defaultId":"919196a8-3b84-4241-aa95-23c6b655eb04","fieldType":"string","layoutSpecificIds":{}},"Appliance3":{"defaultId":"d4fc951a-12a2-4f3e-a889-29c38edac10e","fieldType":"string","layoutSpecificIds":{}},"Service Connected3":{"defaultId":"33dfddc6-429b-4457-951b-129bafc0c075","fieldType":"string","layoutSpecificIds":{}},"Issue Date3":{"defaultId":"fec21496-d897-46a4-bdea-aff4df08aef3","fieldType":"string","layoutSpecificIds":{}},"VA Facility3":{"defaultId":"8461c718-039e-43cc-8f49-c85795a18a44","fieldType":"string","layoutSpecificIds":{}},"Impected Location3":{"defaultId":"cf831da2-3a3a-48d9-9e1a-1342f35818e2","fieldType":"string","layoutSpecificIds":{}},"Appliance4":{"defaultId":"80661c0c-c76e-47f1-a9d9-144e43a54e2d","fieldType":"string","layoutSpecificIds":{}},"Service Connected4":{"defaultId":"caa9e1f0-10b6-4a94-849c-169b24b29e9c","fieldType":"string","layoutSpecificIds":{}},"Issue Date4":{"defaultId":"79d710ad-62ac-4b0b-9960-fc9b21073551","fieldType":"string","layoutSpecificIds":{}},"VA Facility4":{"defaultId":"87ec0075-82ba-41f4-915c-609d3040f8f8","fieldType":"string","layoutSpecificIds":{}},"Impected Location4":{"defaultId":"066e5b4a-4453-40e8-83af-d1ee24bfff34","fieldType":"string","layoutSpecificIds":{}},"Appliance5":{"defaultId":"807e32a5-495a-48ce-94ea-7b52fffb2497","fieldType":"string","layoutSpecificIds":{}},"Service Connected5":{"defaultId":"459f9156-df71-4afd-8215-4c7c98c0907a","fieldType":"string","layoutSpecificIds":{}},"Issue Date5":{"defaultId":"61048742-7bce-47f2-9fda-6163de19e0e4","fieldType":"string","layoutSpecificIds":{}},"VA Facility5":{"defaultId":"b4fc87c6-8585-4400-b161-a7085f07137a","fieldType":"string","layoutSpecificIds":{}},"Impected Location5":{"defaultId":"8359bf9e-133d-412e-9113-5c31746ae8b5","fieldType":"string","layoutSpecificIds":{}}},"tables":{},"layouts":{"Collection 1":{"layoutId":"a2787e0c-9afa-43dc-86df-31f8fd300fd8"},"Collection 2":{"layoutId":"0373199f-82a4-4781-af74-b2adfbdfac61"},"Collection 3":{"layoutId":"e344e3de-d976-445b-9ead-6f66680d13ba"},"Collection 4":{"layoutId":"b13189e4-19b9-41d9-9dcb-a7b9f9709598"},"Collection 5":{"layoutId":"a6dcd8a0-59c6-4816-901e-5825cf258228"},"Collection 6":{"layoutId":"a3aef778-0d5c-495f-a235-c75fddd969ce"},"Collection 7":{"layoutId":"65601b39-ef77-488e-bb3b-140503207646"},"Collection 8":{"layoutId":"ebf0b2ec-30ec-42d9-9c31-825041b30826"},"Collection 9":{"layoutId":"3759cbd2-b7a3-492a-8ef1-3e40834fa4e9"},"Collection 10":{"layoutId":"025b935d-40ed-4d60-ac06-af0f3f88fbfc"},"Collection 11":{"layoutId":"460b4c1a-6860-4c58-aa82-4a444c1afae0"},"1 device 5 caps":{"layoutId":"35a9f11f-ce96-46e0-8b09-378541fa3ca7"},"1 device 5 cursive":{"layoutId":"e636f3d5-62ca-48d8-a747-e2fcfc899681"},"2 device 5 cursive":{"layoutId":"85625703-dbb9-4355-9219-6532158fb17c"},"2 devices 5 caps":{"layoutId":"0a7ebe6c-b5bf-46fc-bee7-ac9fdf998d96"},"3 device 5 caps":{"layoutId":"3d3b3026-787f-4a9f-9349-3520a1e0d932"},"3 device 5 cursive":{"layoutId":"e3b7d25e-4bbb-43cc-a452-6d01f6f753ab"},"4 device 5 Caps":{"layoutId":"2f6abc62-9196-47ff-8a62-2b02b10803dc"},"4 device 5 cursive":{"layoutId":"3e5c77ed-3a5e-468b-a274-26ce998ad2b6"},"Collection 12":{"layoutId":"28308c0b-62b8-4594-8c38-a59be2398eb1"},"Collection 13":{"layoutId":"343ca138-32ee-4005-ba36-b1edba65e13d"},"Collection 14":{"layoutId":"6738f778-7e3b-462b-b7a2-82e9c0e747d2"},"Collection 15":{"layoutId":"bc8ae963-1ad9-4d66-8a07-53ad1b091369"}}}</msdyn_customconfiguration>
+          <msdyn_majoriterationnumber>8</msdyn_majoriterationnumber>
+          <msdyn_minoriterationnumber>0</msdyn_minoriterationnumber>
+          <msdyn_name>55e0d8ac-da51-41d5-9bc4-d606c17a62bb_2023-03-22T12:45:06.791Z</msdyn_name>
+          <msdyn_modelrundataspecification>H4sIAAAAAAAACu2bTU/jMBCG/4qV067UBfG1h966tEhILF1RtNIenWTaNXLsyHYQFeK/7yRpaUoCiyv7Nhygiv1Oxn48fjHCz8mihOxKm4K732Cs0CoZn4ySa1VW7k5rN1NOuHUyfk6mwpaSr295Ack4SUbJxDkj0sqBrZtTbuH7+UxlOoe833+qs6oA5VB3vy7rJ9cFX0HyMkoKUUD77D0Rc3XzaNs6BZsZUbom2UTUcY4fSliNeh9LtRrxspQi43Xv4zJfblqcWG4/pkW5y2qBY1KrOq0S22w/p1/N43dywdkCw2olM1zh9y+zpzE7Ydqws28XX4/YXMk1M+Aqoyz+tJV0lukl48ziayWwJaI4wvDzJiSXydiZCl7T+9HM8jbJF0xzXjlfVJKnIAeGtpuFefoAWc3q0zFvuHWsbXz+dJSd6G24Ry6rbqgdFgdPbrAh02opclDZwELatTGbaVO/b6O/A5xjVC8FyHx4Febc8e0K7L21SfRGt+vLZ+y9Ider5rYqUjD9zs1b2nWl2i67MsIlt8IHuBjqr1FyJcwBKDoqYhGMxU+R51jUvjC6MqIRjMZvwN2ZK7ZY3PrQ6MqIRrja4ELiJsomeY5GaL3q442UqASjcg8Syr9a4e7zGu2zWHpa4hKMy6zANX9IrewLiUgwIpdcgsq5YX+Ae5XJvpCIhCMiuSjYlDuvX7Y6KmIRjMWkPnVzPHCd+LDoqIhFMBYLMI8Cj76XWimcf8i9mAyoiU0wNtfWYt969/GC0pURjXAnxAm74hkeLtzaC8eejniEq46ibLYctv0Lm1+R9NXEJrzDnx7k8KfEIqLDezEZUFOdRHB4LyhdGdGI4fBeOPZ0xCOew/sVSV9NbMI7/NlBDn9GLCI6vBeTATXVSQSH94LSlRGNGA7vhWNPRzziObxfkfTVxCa8w58f5PDnxCKiw3sxGVBTnURweC8oXRnRiOHwXjj2dMQjnsP7FUlfTWzCO/zFQQ5/QSwiOrwXkwE11UkEh/eC0pURjRgO74VjT0c84jm8X5H01cQmEJsGj+OphLAXul7quNisK7e9vfLm3ya1lBgSaTLV3lPp3Y1q5ehXm7tXi+bq1UeR/n9PaxOzMgZ7rRfrItV4R+6jkJuuzLZ9e3niSP8BDw9WFQY5AAA=</msdyn_modelrundataspecification>
+          <msdyn_type>190690001</msdyn_type>
+          <msdyn_aimodelid>{55e0d8ac-da51-41d5-9bc4-d606c17a62bb}</msdyn_aimodelid>
+          <msdyn_trainedmodelaiconfigurationpareid>{fb127853-8d62-482b-a704-df8b08da13c6}</msdyn_trainedmodelaiconfigurationpareid>
+          <statecode>2</statecode>
+          <statuscode>7</statuscode>
+          <IsCustomizable>1</IsCustomizable>
+          <msdyn_templateversion>1</msdyn_templateversion>
+        </AIConfiguration>
+        <AIConfiguration>
+          <msdyn_aiconfigurationid>{fb127853-8d62-482b-a704-df8b08da13c6}</msdyn_aiconfigurationid>
+          <msdyn_customconfiguration>{"version":"DocumentScanning-1","shouldReturnTableFromUnsupervisedModel":false,"defaultLayoutId":"a2787e0c-9afa-43dc-86df-31f8fd300fd8","requiredFeatures":["CustomDocument"],"displayNameMapping":{"297af143-9d37-4b59-8c83-a4c313353498":"Last Name","7d7f1c31-9dd3-4926-85a5-d1c6fdb4fc5d":"First Name","f7587bda-63cc-4939-aec4-d0e45db32ae6":"Middle Name","bcdb727d-5ce8-4e30-a043-b805b3c0debf":"Veteran SSN","44734518-97d6-401a-a9a8-8f87b9f05917":"Mailing Address","4545e50f-8468-4d83-bd94-3c2713895305":"Telephone Number","2beee635-d6ff-4e83-a82b-0482571bcbcf":"Email Address","41783793-6136-4c09-91ad-24a28f8a4380":"Calendar Year","566c9534-6aea-4167-b008-d0cbe3a27bd4":"Claim Date","8945ecbf-dda3-4f9f-95da-732269cf5a58":"Appliance1","4fc0a926-03f4-4679-b420-afe8d2c2f075":"Service Connected1","3c8c490c-b35d-4a58-9756-f4125a77cfda":"Issue Date1","2c2259e9-d838-42a5-b66c-1d5cb4135362":"VA Facility1","db201fce-cb61-4929-8d8c-c62882562d7a":"Impected Location1","4b299921-9e11-4c2a-843c-ff2837ceabce":"Appliance2","ed6c3a23-6a31-4a9c-b034-879f5290ae93":"Service Connected2","0a1dbb3a-91f3-4166-8cd4-36d69e45c482":"Issue Date2","eac4bc16-4cda-43be-b396-5d9ff4cc3b0f":"VA Facility2","919196a8-3b84-4241-aa95-23c6b655eb04":"Impected Location2","d4fc951a-12a2-4f3e-a889-29c38edac10e":"Appliance3","33dfddc6-429b-4457-951b-129bafc0c075":"Service Connected3","fec21496-d897-46a4-bdea-aff4df08aef3":"Issue Date3","8461c718-039e-43cc-8f49-c85795a18a44":"VA Facility3","cf831da2-3a3a-48d9-9e1a-1342f35818e2":"Impected Location3","80661c0c-c76e-47f1-a9d9-144e43a54e2d":"Appliance4","caa9e1f0-10b6-4a94-849c-169b24b29e9c":"Service Connected4","79d710ad-62ac-4b0b-9960-fc9b21073551":"Issue Date4","87ec0075-82ba-41f4-915c-609d3040f8f8":"VA Facility4","066e5b4a-4453-40e8-83af-d1ee24bfff34":"Impected Location4","807e32a5-495a-48ce-94ea-7b52fffb2497":"Appliance5","459f9156-df71-4afd-8215-4c7c98c0907a":"Service Connected5","61048742-7bce-47f2-9fda-6163de19e0e4":"Issue Date5","b4fc87c6-8585-4400-b161-a7085f07137a":"VA Facility5","8359bf9e-133d-412e-9113-5c31746ae8b5":"Impected Location5"},"presenceTokens":[]}</msdyn_customconfiguration>
+          <msdyn_databinding>{"schemaVersion":2,"input":{"schemaName":"msdyn_aibdatasetfile","queries":{"train":{"type":"fetchXml","query":"&lt;fetch mapping=\"logical\"&gt;\n    &lt;entity name=\"msdyn_aibdatasetfile\"&gt;\n      &lt;filter type=\"and\"&gt;\n  &lt;condition attribute=\"msdyn_aibdatasetid\" operator=\"eq\" value=\"7cb12f8c-4549-46bb-a1a2-61f5d745a191\"/&gt;\n&lt;/filter&gt;\n    &lt;/entity&gt;\n  &lt;/fetch&gt;"}},"relatedEntities":[{"schemaName":"msdyn_AIBDatasetFile_msdyn_AIBuilde","cardinality":"ManyToOne","attributes":[{"specificationName":"binaryName","schemaName":"msdyn_file","dataType":"Undefined","requiredLevel":"ApplicationRequired"}]},{"schemaName":"msdyn_AIBFileAttachedData_msdyn_AIB","specificationName":"labels","cardinality":"OneToMany","queries":{"train":{"type":"fetchXml","query":"&lt;fetch mapping=\"logical\"&gt;\n    &lt;entity name=\"msdyn_aibfileattacheddata\"&gt;\n      &lt;filter type=\"and\"&gt;\n  &lt;condition attribute=\"msdyn_type\" operator=\"eq\" value=\"tag\"/&gt;\n&lt;/filter&gt;\n    &lt;/entity&gt;\n  &lt;/fetch&gt;"}},"embeddedObjects":[{"schemaName":"msdyn_data","isCollection":false,"embeddedObjects":[{"schemaName":"trainingLabel","specificationName":"labels","isCollection":false}]}]},{"schemaName":"msdyn_AIBFileAttachedData_msdyn_AIB","specificationName":"layoutId","cardinality":"OneToMany","queries":{"train":{"type":"fetchXml","query":"&lt;fetch mapping=\"logical\"&gt;\n    &lt;entity name=\"msdyn_aibfileattacheddata\"&gt;\n      &lt;filter type=\"and\"&gt;\n  &lt;condition attribute=\"msdyn_type\" operator=\"eq\" value=\"layout\"/&gt;\n&lt;/filter&gt;\n    &lt;/entity&gt;\n  &lt;/fetch&gt;"}},"embeddedObjects":[{"schemaName":"msdyn_data","isCollection":false,"embeddedObjects":[{"schemaName":"layoutId","specificationName":"layoutId","isCollection":false}]}]}]}}</msdyn_databinding>
+          <msdyn_majoriterationnumber>8</msdyn_majoriterationnumber>
+          <msdyn_minoriterationnumber>0</msdyn_minoriterationnumber>
+          <msdyn_modeldata>038dc5c3-db71-46bb-8ba2-7f5c72d94ab6</msdyn_modeldata>
+          <msdyn_modelperformance>{"metrics":[],"details":[]}</msdyn_modelperformance>
+          <msdyn_name>55e0d8ac-da51-41d5-9bc4-d606c17a62bb_2023-03-22T11:18:06.145Z</msdyn_name>
+          <msdyn_modelrundataspecification>{
+  "SpecFormatVersion": 1,
+  "InputRootEntity": {
+    "DisplayName": "Document",
+    "Attributes": {
+      "binaryName": { "Type": "Image" }
+    }
+  }
+}</msdyn_modelrundataspecification>
+          <msdyn_type>190690000</msdyn_type>
+          <msdyn_aimodelid>{55e0d8ac-da51-41d5-9bc4-d606c17a62bb}</msdyn_aimodelid>
+          <msdyn_lasttrainorrundate>2023-03-22T13:37:42</msdyn_lasttrainorrundate>
+          <statecode>2</statecode>
+          <statuscode>6</statuscode>
+          <IsCustomizable>1</IsCustomizable>
+          <msdyn_templateversion>1</msdyn_templateversion>
+          <msdyn_modelprovisioningmetadata>AQAAAJkAAADvu797Ikdlb2dyYXBoeSI6ImluIiwiQ2x1c3RlcklkIjoiY2luIiwiS2V5VmVyc2lvbiI6IjkzNDk1MTdlODcxYTQ1MzRhNjNkYTY0YWY5YmQ5MmJkIiwiU2lnbmF0dXJlVmVyc2lvbiI6InYxIiwiU2lnbmF0dXJlRGF0ZUJpbmFyeSI6NTI0OTkxNTQ0MzQ4NDY2NDc1OH0gAAAAq49u1gvDZMmriDWuvwniwMOwtXDtO2T9rGzoa3yZl2FOAgAAeyJ2ZXJzaW9uIjoiRG9jdW1lbnRTY2FubmluZ0NvcHlEYXRhLTEiLCJtb2RlbERhdGEiOnsiaW50ZXJuYWxTdXBlcnZpc2VkTW9kZWxJZCI6IjhlZjE1NWNmLTI5NzQtNDFiMi1iZTJkLTI4YTYyZDRhMTc1MiIsImNvZ25pdGl2ZVN1cGVydmlzZWRSZXNvdXJjZUlkIjoiRm9ybVVuZGVyc3RhbmRpbmdBcHBsaWNhdGlvbktleS04IiwiYmFja2VuZFZlcnNpb24iOiJ2MyIsImJhY2tlbmRNaW5vclZlcnNpb24iOiIiLCJrZXlBbGxvY2F0b3JWZXJzaW9uIjoidjIuMCIsIm1vZGVsTGF5b3V0c0NvbmZpZyI6eyJzdWJtb2RlbHMiOltdLCJkZWZhdWx0TGF5b3V0SWQiOiJhMjc4N2UwYy05YWZhLTQzZGMtODZkZi0zMWY4ZmQzMDBmZDgifSwiRmVhdHVyZXMiOnsiY3VzdG9taXplZFByZWJ1aWx0Ijp7InByZWJ1aWx0RXhjbHVkZWRGaWVsZHMiOnt9fSwiaXNDdXN0b21Eb2NNb2RlbCI6dHJ1ZX0sInNvdXJjZUlzbGFuZElkIjoiMTAxIiwiZ2VvIjoiaW4iLCJlbnZpcm9ubWVudElkIjoiZmY5ZWJiZWEtYjAwNi1lZTExLWE2NmQtNjA0NWJkNzFmNmRjIiwiY2FwaU1vZGVsSWQiOiIwMzhkYzVjMy1kYjcxLTQ2YmItOGJhMi03ZjVjNzJkOTRhYjYifX0=</msdyn_modelprovisioningmetadata>
+        </AIConfiguration>
+      </AIConfigurations>
+    </AIModel>
+  </AIModels>
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="new_sharedcommondataserviceforapps_36124">
+      <connectionreferencedisplayname>Microsoft Dataverse Default-36124</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="new_sharedsharepointonline_21d30">
+      <connectionreferencedisplayname>SharePoint</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="new_sharedsharepointonline_692a8">
+      <connectionreferencedisplayname>SharePoint</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="new_sharedsharepointonline_98203">
+      <connectionreferencedisplayname>SharePoint Default-98203</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="new_sharedsharepointonline_f12e8">
+      <connectionreferencedisplayname>SharePoint</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="new_shareduiflow_22cc3">
+      <connectionreferencedisplayname>Desktop flows Default-22cc3</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_uiflow</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="new_shareduiflow_f3939">
+      <connectionreferencedisplayname>Desktop flows Default-f3939</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_uiflow</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+  </connectionreferences>
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>
